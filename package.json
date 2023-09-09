@@ -1,7 +1,7 @@
 {
   "name": "ae_sdk",
-  "version": "0.0.5",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A simple SDK for Aliexpress (dropshipping and affiliate) APIs.",
   "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -14,9 +14,20 @@
     "ci": "pnpm run lint && pnpm run test && pnpm run build",
     "release": "pnpm run lint && pnpm run test && pnpm run build && changeset publish"
   },
-  "keywords": [],
+  "keywords": [
+    "typescript",
+    "ae",
+    "aliexpress",
+    "sdk"
+  ],
   "author": "moh3a",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moh3a/ae_sdk"
+  },
+  "homepage": "https://github.com/moh3a/ae_sdk",
+  "bugs": "https://github.com/moh3a/ae_sdk/issues",
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "@types/node": "^20.5.9",

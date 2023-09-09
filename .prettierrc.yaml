@@ -1,0 +1,101 @@
+# .prettierrc
+
+# Include parentheses around a sole arrow function parameter.
+# - always -> Always include parens. Example: `(x) => x`
+# - avoid -> Omit parens when possible. Example: `x => x`
+arrowParens: 'always'
+
+# Put > of opening tags on the last line instead of on a new line.
+# bracketSameLine: false
+
+# Print spaces between brackets.
+bracketSpacing: true
+
+# Print (to stderr) where a cursor at the given position would move to after formatting. This option cannot be used with --range-start and --range-end.
+# cursorOffset: -1
+
+# Whether parse the .editorconfig file in your project and convert its properties to the corresponding Prettier configuration. This configuration will be overridden by .prettierrc, etc.
+# editorconfig: false
+
+# Control how Prettier formats quoted code embedded in the file.
+# - auto -> Format embedded code if Prettier can automatically identify it.
+# - off -> Never automatically format embedded code.
+# embeddedLanguageFormatting: "auto"
+
+# Which end of line characters to apply.
+# - lf -> Line Feed only (\\n), common on Linux and macOS as well as inside git repos
+# - crlf -> Carriage Return + Line Feed characters (\\r\\n), common on Windows
+# - cr -> Carriage Return character only (\\r), used very rarely
+# - auto -> Maintain existing (mixed values within one file are normalised by looking at what's used after the first line)
+endOfLine: 'auto'
+
+# Specify the input filepath. This will be used to do parser inference.
+# filepath: ""
+
+# How to handle whitespaces in HTML.
+# - css -> Respect the default value of CSS display property.
+# - strict -> Whitespaces are considered sensitive.
+# - ignore -> Whitespaces are considered insensitive.
+# htmlWhitespaceSensitivity: "css"
+
+# Insert @format pragma into file's first docblock comment.
+# insertPragma: false
+
+# Use single quotes in JSX.
+# jsxSingleQuote: false
+
+# Which parser to use.
+# parser: ["flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less", "scss", "json", "json5", "json-stringify", "graphql", "markdown", "mdx", "vue", "yaml", "glimmer", "html", "angular", "lwc", "string"]
+
+# Custom directory that contains prettier plugins in node_modules subdirectory. Overrides default behavior when plugins are searched relatively to the location of Prettier. Multiple values are accepted.
+# pluginSearchDirs: []
+
+# Add a plugin. Multiple plugins can be passed as separate `--plugin`s.
+# plugins: []
+
+# The line length where Prettier will try wrap.
+# printWidth: 80
+
+# How to wrap prose.
+# - always -> Wrap prose if it exceeds the print width.
+# - never -> Do not wrap prose.
+# - preserve -> Wrap prose as-is.
+# proseWrap: preserve
+
+# Change when properties in objects are quoted.
+# - as-needed -> Only add quotes around object properties where required.
+# - consistent -> If at least one property in an object requires quotes, quote all properties.
+# - preserve -> Respect the input use of quotes in object properties.
+# quoteProps: "as-needed"
+
+# Format code ending at a given character offset (exclusive). The range will extend forwards to the end of the selected statement. This option cannot be used with --cursor-offset.
+# rangeEnd: null
+
+# Format code starting at a given character offset. The range will extend backwards to the start of the first line containing the selected statement. This option cannot be used with --cursor-offset.
+# rangeStart: 0
+
+# Require either '@prettier' or '@format' to be present in the file's first docblock comment in order for it to be formatted.
+# requirePragma: false
+
+# Print semicolons.
+semi: true
+
+# Enforce single attribute per line in HTML, Vue and JSX.
+singleAttributePerLine: true
+
+# Use single quotes instead of double quotes.
+singleQuote: false
+
+# Number of spaces per indentation level.
+tabWidth: 2
+
+# Print trailing commas wherever possible when multi-line.
+# - all -> Trailing commas wherever possible (including function arguments).
+# - es5 -> Trailing commas where valid in ES5 (objects, arrays, etc.)
+# - none -> No trailing commas.
+trailingComma: 'all'
+# Indent with tabs instead of spaces.
+# useTabs: false
+
+# Indent script and style tags in Vue files.
+# vueIndentScriptAndStyle: false
