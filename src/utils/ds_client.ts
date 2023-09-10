@@ -40,20 +40,17 @@ export class AEDSClient extends AEBaseClient implements IAEDSClientSession {
     const parameters: AE_DS_EXECUTE_FN_PARAMS<K> & PublicParams = {
       ...params,
       app_key: this.app_key,
-      session: this.session,
-      method,
+      access_token: this.session,
       simplify: true,
-      v: this.v,
-      format: this.format,
       sign_method: this.sign_method,
-      timestamp: this.get_timestamp(),
+      timestamp: Date.now().toString(),
     };
-    parameters.sign = this.sign(parameters);
+    parameters.sign = this.sign(method, parameters);
 
     return await this.call<
       AE_DS_EXECUTE_FN_PARAMS<K> & PublicParams,
       AE_DS_EXECUTE_FN_RESULT<K>
-    >(parameters);
+    >(method, parameters);
   }
 
   async queryProducts(

@@ -1,6 +1,11 @@
-import { createHash } from "crypto";
+import { createHmac } from "crypto";
 
-import { AE_Base_Client, AE_Response_Format, PublicParams } from "../types/ae";
+import {
+  AE_API_NAMES,
+  AE_Base_Client,
+  AE_Response_Format,
+  PublicParams,
+} from "../types/ae";
 import { Timestamp } from "../types";
 
 export class AEBaseClient implements AE_Base_Client {
@@ -10,40 +15,82 @@ export class AEBaseClient implements AE_Base_Client {
   readonly format: AE_Response_Format;
 
   protected readonly v = "2.0";
-  protected readonly sign_method = "md5";
+  protected readonly sign_method = "sha256";
 
   constructor(init: AE_Base_Client) {
     this.app_key = init.app_key;
     this.app_secret = init.app_secret;
-    this.url = init.url ?? "https://api.taobao.com/router/rest";
+    this.url = init.url ?? "https://api-sg.aliexpress.com/sync";
     this.format = init.format ?? "json";
   }
 
-  protected sign(params: any): string {
+  // protected sign(params: any): string {
+  //   let sorted = Object.keys(params).sort();
+  //   let basestring = this.app_secret;
+
+  //   for (let i = 0; i < sorted.length; i++) {
+  //     basestring += sorted[i] + params[sorted[i] as keyof typeof params];
+  //   }
+  //   basestring += this.app_secret;
+
+  //   return createHash("md5")
+  //     .update(basestring, "utf-8")
+  //     .digest("hex")
+  //     .toUpperCase();
+  // }
+
+  protected sign(method: AE_API_NAMES, params: any): string {
+    let basestring = method;
     let sorted = Object.keys(params).sort();
-    let basestring = this.app_secret;
 
     for (let i = 0; i < sorted.length; i++) {
       basestring += sorted[i] + params[sorted[i] as keyof typeof params];
     }
-    basestring += this.app_secret;
-
-    return createHash("md5")
-      .update(basestring, "utf-8")
-      .digest("hex")
-      .toUpperCase();
+    return createHmac("sha256", this.app_secret, { encoding: "utf-8" })
+      .update(basestring)
+      .digest("hex");
   }
 
-  protected async call<T extends PublicParams, K>(params: T) {
+  // protected async call<T extends PublicParams, K>(params: T) {
+  //   try {
+  //     let basestring = this.url;
+  //     let sorted = Object.keys(params).sort();
+
+  //     for (let i = 0; i < sorted.length; i++) {
+  //       let symbol = i === 0 ? "?" : "&";
+  //       if (params[sorted[i] as keyof typeof params])
+  //         basestring +=
+  //           symbol +
+  //           sorted[i] +
+  //           "=" +
+  //           encodeURIComponent(
+  //             params[sorted[i] as keyof typeof params] as
+  //               | number
+  //               | string
+  //               | boolean,
+  //           );
+  //     }
+
+  //     const res = await fetch(basestring, { method: "POST" });
+  //     return (await res.json()) as K;
+  //   } catch (error) {
+  //     console.error(error);
+  //     return;
+  //   }
+  // }
+
+  protected async call<T extends PublicParams, K>(
+    method: AE_API_NAMES,
+    params: T,
+  ) {
     try {
-      let basestring = this.url;
+      let basestring = this.url + "?method=" + method;
       let sorted = Object.keys(params).sort();
 
       for (let i = 0; i < sorted.length; i++) {
-        let symbol = i === 0 ? "?" : "&";
         if (params[sorted[i] as keyof typeof params])
           basestring +=
-            symbol +
+            "&" +
             sorted[i] +
             "=" +
             encodeURIComponent(
@@ -53,7 +100,6 @@ export class AEBaseClient implements AE_Base_Client {
                 | boolean,
             );
       }
-
       const res = await fetch(basestring, { method: "POST" });
       return (await res.json()) as K;
     } catch (error) {

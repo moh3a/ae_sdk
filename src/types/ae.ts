@@ -127,16 +127,25 @@ export type AE_EXECUTE_FN_RESULT<T extends AE_API_NAMES> =
  * @param {String} sign_method Indicates the signature digest algorithm. The value can be set to hmac or md5.
  * @param {String} sign Indicates the obtained signature of API input parameters.
  */
+// export interface PublicParams {
+//   method: AE_API_NAMES;
+//   app_key: string;
+//   session?: string;
+//   timestamp: string;
+//   format?: AE_Response_Format;
+//   v: string;
+//   simplify?: boolean;
+//   sign_method: "hmac" | "md5";
+//   sign?: string;
+// }
+
 export interface PublicParams {
-  method: AE_API_NAMES;
   app_key: string;
-  session?: string;
+  access_token?: string;
   timestamp: string;
-  format?: AE_Response_Format;
-  v: string;
-  simplify?: boolean;
-  sign_method: "hmac" | "md5";
+  sign_method: "hmac" | "md5" | "sha256";
   sign?: string;
+  simplify?: boolean;
 }
 
 export interface AE_Base_Client {
@@ -146,6 +155,7 @@ export interface AE_Base_Client {
   format?: AE_Response_Format;
 }
 
+// todo change error response type
 export interface AE_Error_Response {
   msg?: string;
   code?: number;
