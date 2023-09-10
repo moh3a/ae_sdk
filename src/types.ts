@@ -1,7 +1,23 @@
+/**
+ * ALIEXPRESS SERVICES
+ */
+
+export type AE_DROPSHIPPING_SERVICE = "ds";
+export type AE_AFFILIATE_SERVICE = "affiliate";
+export type AE_SYSTEM_SERVICE = "system";
+export type AE_SERVICE =
+  | AE_AFFILIATE_SERVICE
+  | AE_DROPSHIPPING_SERVICE
+  | AE_SYSTEM_SERVICE;
+
+/**
+ * ALIEXPRESS API NAMES
+ */
+
 export type AE_API_NAMES =
   | DS_API_NAMES
   | AFFILIATE_API_NAMES
-  | TOP_AUTH_API_NAMES;
+  | SYSTEM_API_NAMES;
 
 export type DS_API_NAMES =
   | "aliexpress.ds.recommend.feed.get"
@@ -19,22 +35,33 @@ export type AFFILIATE_API_NAMES =
   | "aliexpress.affiliate.featuredpromo.products.get"
   | "aliexpress.affiliate.category.get";
 
-export type TOP_AUTH_API_NAMES = "taobao.top.auth.token.refresh";
-
-export type AE_DROPSHIPPING_SERVICE = "ds";
-export type AE_AFFILIATE_SERVICE = "affiliate";
-export type AE_SYSTEM_SERVICE = "system";
-export type AE_SERVICE =
-  | AE_AFFILIATE_SERVICE
-  | AE_DROPSHIPPING_SERVICE
-  | AE_SYSTEM_SERVICE;
+export type SYSTEM_API_NAMES =
+  | "/auth/token/security/create"
+  | "/auth/token/create"
+  | "/auth/token/security/refresh"
+  | "/auth/token/refresh";
 
 export type AE_EXECUTE_FN_METHODS<T extends AE_SERVICE> =
   T extends AE_DROPSHIPPING_SERVICE
     ? DS_API_NAMES
     : T extends AE_SYSTEM_SERVICE
-    ? TOP_AUTH_API_NAMES
+    ? SYSTEM_API_NAMES
     : AFFILIATE_API_NAMES;
+
+/**
+ * METHODS PARAMETERS
+ */
+
+export type AE_SYSTEM_EXECUTE_FN_PARAMS<T extends SYSTEM_API_NAMES> =
+  T extends "/auth/token/security/create"
+    ? AES_Generate_Security_Token_Params
+    : T extends "/auth/token/create"
+    ? AES_Generate_Token_Params
+    : T extends "/auth/token/security/refresh"
+    ? AES_Refresh_Security_Token_Params
+    : T extends "/auth/token/refresh"
+    ? AES_Refresh_Token_Params
+    : unknown;
 
 export type AE_DS_EXECUTE_FN_PARAMS<T extends DS_API_NAMES> =
   T extends "aliexpress.ds.recommend.feed.get"
@@ -71,8 +98,23 @@ export type AE_EXECUTE_FN_PARAMS<T extends AE_API_NAMES> =
     ? AE_DS_EXECUTE_FN_PARAMS<T>
     : T extends AFFILIATE_API_NAMES
     ? AE_AFFILIATE_EXECUTE_FN_PARAMS<T>
-    : T extends TOP_AUTH_API_NAMES
-    ? TOP_Refresh_Token_Params
+    : T extends SYSTEM_API_NAMES
+    ? AE_SYSTEM_EXECUTE_FN_PARAMS<T>
+    : unknown;
+
+/**
+ * METHODS RESULTS
+ */
+
+export type AE_SYSTEM_EXECUTE_FN_RESULT<T extends SYSTEM_API_NAMES> =
+  T extends "/auth/token/security/create"
+    ? AES_Generate_Security_Token_Result
+    : T extends "/auth/token/create"
+    ? AES_Generate_Token_Result
+    : T extends "/auth/token/security/refresh"
+    ? AES_Refresh_Security_Token_Result
+    : T extends "/auth/token/refresh"
+    ? AES_Refresh_Token_Result
     : unknown;
 
 export type AE_DS_EXECUTE_FN_RESULT<T extends DS_API_NAMES> =
@@ -110,8 +152,8 @@ export type AE_EXECUTE_FN_RESULT<T extends AE_API_NAMES> =
     ? AE_DS_EXECUTE_FN_RESULT<T>
     : T extends AFFILIATE_API_NAMES
     ? AE_AFFILIATE_EXECUTE_FN_RESULT<T>
-    : T extends TOP_AUTH_API_NAMES
-    ? TOP_Refresh_Token_Result
+    : T extends SYSTEM_API_NAMES
+    ? AE_SYSTEM_EXECUTE_FN_RESULT<T>
     : unknown;
 
 /**
@@ -127,23 +169,13 @@ export type AE_EXECUTE_FN_RESULT<T extends AE_API_NAMES> =
  * @param {String} sign_method Indicates the signature digest algorithm. The value can be set to hmac or md5.
  * @param {String} sign Indicates the obtained signature of API input parameters.
  */
-// export interface PublicParams {
-//   method: AE_API_NAMES;
-//   app_key: string;
-//   session?: string;
-//   timestamp: string;
-//   format?: AE_Response_Format;
-//   v: string;
-//   simplify?: boolean;
-//   sign_method: "hmac" | "md5";
-//   sign?: string;
-// }
-
 export interface PublicParams {
   app_key: string;
-  access_token?: string;
-  timestamp: string;
+  session: string;
+  // access_token: string;
+  timestamp: number;
   sign_method: "hmac" | "md5" | "sha256";
+  method: AE_API_NAMES;
   sign?: string;
   simplify?: boolean;
 }
@@ -151,6 +183,8 @@ export interface PublicParams {
 export interface AE_Base_Client {
   app_key: string;
   app_secret: string;
+  session: string;
+  // access_token: string;
   url?: string;
   format?: AE_Response_Format;
 }
@@ -166,17 +200,66 @@ export interface AE_Error_Response {
 export type AE_Response_Format = "xml" | "json";
 
 /**
- * AUTH SERVICES
+ * SYSTEM SERVICES
+ * GENERATE SECURITY TOKEN
+ */
+export interface AES_Base_Access_Token_Result {
+  account_id: string;
+  seller_id: string;
+  user_id: string;
+  sp: string;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  expire_time: number;
+  refresh_token_valid_time: number;
+  refresh_expires_in: number;
+  locale: string;
+}
+
+export interface AES_Access_Token_Result extends AES_Base_Access_Token_Result {
+  havana_id: string;
+  user_nick: string;
+  account: string;
+  account_platform: string;
+}
+
+export interface AES_Generate_Security_Token_Params {
+  code: string;
+  uuid?: string;
+}
+
+export interface AES_Generate_Security_Token_Result
+  extends AES_Base_Access_Token_Result {}
+
+/**
+ * SYSTEM SERVICES
+ * GENERATE ACCESS TOKEN
+ */
+export interface AES_Generate_Token_Params
+  extends AES_Generate_Security_Token_Params {}
+
+export interface AES_Generate_Token_Result extends AES_Access_Token_Result {}
+
+/**
+ * SYSTEM SERVICES
+ * REFRESH SECURITY TOKEN
+ */
+export interface AES_Refresh_Security_Token_Params
+  extends AES_Refresh_Token_Params {}
+
+export interface AES_Refresh_Security_Token_Result
+  extends AES_Access_Token_Result {}
+
+/**
+ * SYSTEM SERVICES
  * REFRESH ACCESS TOKEN
  */
-export interface TOP_Refresh_Token_Params {
+export interface AES_Refresh_Token_Params {
   refresh_token: string;
 }
-export interface TOP_Refresh_Token_Result {
-  top_auth_token_refresh_response: {
-    token_result: string;
-  };
-}
+
+export interface AES_Refresh_Token_Result extends AES_Access_Token_Result {}
 
 /**
  *
@@ -505,6 +588,26 @@ export interface DS_OrderAPI_Place_Order_Params {
    * JSON.stringify the whole thing
    */
   param_place_order_request4_open_api_d_t_o: string;
+}
+
+export interface AE_Product_Item {
+  logistics_service_name?: string;
+  order_memo?: string;
+  product_count: number;
+  product_id: number;
+  sku_attr?: string;
+}
+
+export interface AE_Logistics_Address {
+  address: string;
+  city?: string;
+  contact_person?: string;
+  country?: string;
+  full_name?: string;
+  mobile_no?: string;
+  phone_country?: string;
+  province?: string;
+  zip?: string;
 }
 
 export interface DS_OrderAPI_Place_Order_Result {

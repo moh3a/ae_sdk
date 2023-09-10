@@ -1,6 +1,12 @@
 # AE_SDK
 
-A simple SDK for Aliexpress (dropshipping and affiliate) APIs.
+A simple SDK for Aliexpress (system tools, dropshipping and affiliate) APIs.
+
+## Todo
+
+- Update affiliate and ds APIs according to [aliexpress official website](https://open.aliexpress.com/doc/api.htm#/api);
+- Add in code documentation using `jsdoc`;
+- Add unit tests;
 
 ## Installation
 
