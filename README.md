@@ -5,6 +5,7 @@ A simple SDK for Aliexpress (system tools, dropshipping and affiliate) APIs.
 ## Todo
 
 - Update affiliate and ds APIs according to [aliexpress official website](https://open.aliexpress.com/doc/api.htm#/api);
+- Add better error handling and fix resp_result / error_result;
 - Add in code documentation using `jsdoc`;
 - Add unit tests;
 

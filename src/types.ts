@@ -29,11 +29,14 @@ export type DS_API_NAMES =
   | "aliexpress.logistics.ds.trackinginfo.query";
 
 export type AFFILIATE_API_NAMES =
-  | "aliexpress.affiliate.productdetail.get"
-  | "aliexpress.affiliate.product.query"
-  | "aliexpress.affiliate.hotproduct.query"
+  | "aliexpress.affiliate.link.generate"
+  | "aliexpress.affiliate.category.get"
+  | "aliexpress.affiliate.featuredpromo.get"
   | "aliexpress.affiliate.featuredpromo.products.get"
-  | "aliexpress.affiliate.category.get";
+  | "aliexpress.affiliate.hotproduct.query"
+  | "aliexpress.affiliate.order.get"
+  | "aliexpress.affiliate.productdetail.get"
+  | "aliexpress.affiliate.product.query";
 
 export type SYSTEM_API_NAMES =
   | "/auth/token/security/create"
@@ -81,16 +84,22 @@ export type AE_DS_EXECUTE_FN_PARAMS<T extends DS_API_NAMES> =
     : unknown;
 
 export type AE_AFFILIATE_EXECUTE_FN_PARAMS<T extends AFFILIATE_API_NAMES> =
-  T extends "aliexpress.affiliate.productdetail.get"
+  T extends "aliexpress.affiliate.link.generate"
+    ? Affiliate_Generate_Affiliate_Links_Params
+    : T extends "aliexpress.affiliate.category.get"
+    ? Affiliate_Categories_Params
+    : T extends "aliexpress.affiliate.featuredpromo.get"
+    ? Affiliate_Featuredpromo_Info_Params
+    : T extends "aliexpress.affiliate.featuredpromo.products.get"
+    ? Affiliate_Featured_Promo_Products_Params
+    : T extends "aliexpress.affiliate.hotproduct.query"
+    ? Affiliate_Hotproducts_Params
+    : T extends "aliexpress.affiliate.order.get"
+    ? Affiliate_Order_Info_Params
+    : T extends "aliexpress.affiliate.productdetail.get"
     ? Affiliate_Product_Details_Params
     : T extends "aliexpress.affiliate.product.query"
     ? Affiliate_Products_Params
-    : T extends "aliexpress.affiliate.hotproduct.query"
-    ? Affiliate_Hotproducts_Params
-    : T extends "aliexpress.affiliate.featuredpromo.products.get"
-    ? Affiliate_Featured_Promo_Products_Params
-    : T extends "aliexpress.affiliate.category.get"
-    ? null
     : unknown;
 
 export type AE_EXECUTE_FN_PARAMS<T extends AE_API_NAMES> =
@@ -135,16 +144,22 @@ export type AE_DS_EXECUTE_FN_RESULT<T extends DS_API_NAMES> =
     : unknown;
 
 export type AE_AFFILIATE_EXECUTE_FN_RESULT<T extends AFFILIATE_API_NAMES> =
-  T extends "aliexpress.affiliate.productdetail.get"
+  T extends "aliexpress.affiliate.link.generate"
+    ? Affiliate_Generate_Affiliate_Links_Result
+    : T extends "aliexpress.affiliate.category.get"
+    ? Affiliate_Categories_Result
+    : T extends "aliexpress.affiliate.featuredpromo.get"
+    ? Affiliate_Featuredpromo_Info_Result
+    : T extends "aliexpress.affiliate.featuredpromo.products.get"
+    ? Affiliate_Featured_Promo_Products_Result
+    : T extends "aliexpress.affiliate.hotproduct.query"
+    ? Affiliate_Hotproducts_Result
+    : T extends "aliexpress.affiliate.order.get"
+    ? Affiliate_Order_Info_Result
+    : T extends "aliexpress.affiliate.productdetail.get"
     ? Affiliate_Product_Details_Result
     : T extends "aliexpress.affiliate.product.query"
     ? Affiliate_Products_Result
-    : T extends "aliexpress.affiliate.hotproduct.query"
-    ? Affiliate_Hotproducts_Result
-    : T extends "aliexpress.affiliate.featuredpromo.products.get"
-    ? Affiliate_Featured_Promo_Products_Result
-    : T extends "aliexpress.affiliate.category.get"
-    ? Affiliate_Categories_Result
     : unknown;
 
 export type AE_EXECUTE_FN_RESULT<T extends AE_API_NAMES> =
@@ -189,12 +204,13 @@ export interface AE_Base_Client {
   format?: AE_Response_Format;
 }
 
-// todo change error response type
 export interface AE_Error_Response {
-  msg?: string;
-  code?: number;
-  sub_msg?: string;
-  sub_code?: string;
+  error_response: {
+    type: string;
+    code: string;
+    msg: string;
+    request_id: string;
+  };
 }
 
 export type AE_Response_Format = "xml" | "json";
@@ -766,6 +782,37 @@ export interface DS_ShippingAPI_Tracking_Info_Result {
 
 /**
  * AFFILIATE API
+ * GENERATE AFFILIATE LINKS
+ */
+export interface Affiliate_Generate_Affiliate_Links_Params {
+  /** Promotion link type: 0 for normal link which has standard commission , and 2 for hot link which has hot product commission */
+  promotion_link_type: number;
+  source_values: string;
+  tracking_id: string;
+  app_signature?: string;
+}
+
+export interface Affiliate_Promo_Link {
+  promotion_link: string;
+  source_value: string;
+}
+
+export interface Affiliate_Generate_Affiliate_Links {
+  total_result_count: number;
+  tracking_id: string;
+  promotion_links: Affiliate_Promo_Link[];
+}
+
+export interface Affiliate_Generate_Affiliate_Links_Result {
+  resp_result: {
+    resp_code?: number;
+    resp_msg?: string;
+    result: Affiliate_Generate_Affiliate_Links;
+  };
+}
+
+/**
+ * AFFILIATE API
  * PRODUCT DETAILS
  */
 
@@ -839,9 +886,7 @@ export interface Affiliate_Product_Details_Params
 
 export interface Affiliate_Product_Details {
   current_record_count: number;
-  products: {
-    product: Affiliate_Product_Details[];
-  };
+  products: Affiliate_Product_Details[];
 }
 
 export interface Affiliate_Product_Details_Result {
@@ -908,6 +953,9 @@ export interface Affiliate_Hotproducts_Result
  * AFFILIATE API
  * CATEGORIES
  */
+export interface Affiliate_Categories_Params {
+  app_signature?: string;
+}
 
 export interface Affiliate_Category_Details {
   category_id: number;
@@ -916,21 +964,45 @@ export interface Affiliate_Category_Details {
 }
 
 export interface Affiliate_Categories {
-  resp_code: number;
-  resp_msg: string;
-  result: {
-    categories: Affiliate_Category_Details[];
-    total_result_count: number;
-  };
+  categories: Affiliate_Category_Details[];
+  total_result_count: number;
 }
 
 export interface Affiliate_Categories_Result {
-  resp_result: Affiliate_Categories;
+  resp_result: {
+    resp_code: number;
+    resp_msg: string;
+    result: Affiliate_Categories;
+  };
 }
 
 /**
  * AFFILIATE API
- * FEATURED PROMO
+ * FEATURED PROMO INFO
+ */
+export interface Affiliate_Featuredpromo_Info_Params
+  extends Affiliate_Categories_Params {}
+
+export interface Affiliate_Featuredpromo_Details {
+  promo_desc: string;
+  promo_name: string;
+  product_num: number;
+}
+
+export interface Affiliate_Featuredpromo_Info {
+  current_record_count: number;
+  promos: Affiliate_Featuredpromo_Details;
+}
+
+export interface Affiliate_Featuredpromo_Info_Result {
+  resp_code: number;
+  resp_msg: string;
+  result: Affiliate_Featuredpromo_Info;
+}
+
+/**
+ * AFFILIATE API
+ * FEATURED PROMO PRODUCTS
  */
 
 export interface Affiliate_Featured_Promo_Products_Params
@@ -972,5 +1044,64 @@ export interface Affiliate_Featured_Promo_Products_Result {
       is_finished: boolean;
       products: Affiliate_Featured_Promo_Product[];
     };
+  };
+}
+
+/**
+ * AFFILIATE API
+ * GET ORDER INFO
+ */
+export interface Affiliate_Order_Info_Params {
+  app_signature?: string;
+  fields?: string;
+  order_ids?: string;
+}
+
+export interface Affiliate_Order_Details {
+  estimated_finished_commission: number;
+  product_detail_url: string;
+  estimated_paid_commission: number;
+  product_count: number;
+  order_number: number;
+  is_hot_product: "Y" | "N";
+  parent_order_number: number;
+  product_main_image_url: string;
+  order_status: string;
+  settled_currency: string;
+  category_id: number;
+  product_id: number;
+  order_type: string;
+  tracking_id: string;
+  created_time: string;
+  finished_time: string;
+  completed_settlement_time: string;
+  paid_time: string;
+  customer_parameters: string;
+  is_new_buyer: "Y" | "N";
+  ship_to_country: string;
+  sub_order_id: number;
+  product_title: string;
+  incentive_commission_rate: string;
+  new_buyer_bonus_commission: number;
+  estimated_incentive_paid_commission: number;
+  is_affiliate_product: "Y" | "N";
+  paid_amount: number;
+  effect_detail_status: string;
+  estimated_incentive_finished_commission: number;
+  commission_rate: string;
+  finished_amount: number;
+  order_id: number;
+}
+
+export interface Affiliate_Order_Info {
+  current_record_count: number;
+  orders: Affiliate_Order_Details[];
+}
+
+export interface Affiliate_Order_Info_Result {
+  resp_result: {
+    result: Affiliate_Order_Info;
+    resp_code?: number;
+    resp_msg?: string;
   };
 }
