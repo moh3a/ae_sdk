@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.3.2
+
+### Patch Changes
+
+- Finish affiliate API methods
+
 ## 0.3.1
 
 ### Patch Changes

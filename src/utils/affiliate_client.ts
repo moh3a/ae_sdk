@@ -14,6 +14,14 @@ import {
   Affiliate_Featuredpromo_Info_Result,
   Affiliate_Order_Info_Params,
   Affiliate_Order_Info_Result,
+  Affiliate_Hotproducts_Download_Result,
+  Affiliate_Hotproducts_Download_Params,
+  Affiliate_Smart_Match_Products_Params,
+  Affiliate_Smart_Match_Products_Result,
+  Affiliate_Order_List_Params,
+  Affiliate_Order_List_Result,
+  Affiliate_Order_List_ByIdx_Params,
+  Affiliate_Order_List_ByIdx_Result,
 } from "../types";
 import { AEBaseClient } from "./client";
 
@@ -49,7 +57,7 @@ export class AEAffiliateClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.featuredpromo.get&methodType=GET/POST
    *
    */
-  async getFeaturedPromoInfo(
+  async featuredPromoInfo(
     args: Affiliate_Featuredpromo_Info_Params,
   ): Promise<Affiliate_Featuredpromo_Info_Result | undefined> {
     return await this.execute("aliexpress.affiliate.featuredpromo.get", args);
@@ -60,7 +68,7 @@ export class AEAffiliateClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.featuredpromo.products.get&methodType=GET/POST
    *
    */
-  async getFeaturedPromoProducts(
+  async featuredPromoProducts(
     args: Affiliate_Featured_Promo_Products_Params,
   ): Promise<Affiliate_Featured_Promo_Products_Result | undefined> {
     return await this.execute(
@@ -74,7 +82,11 @@ export class AEAffiliateClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.hotproduct.download&methodType=GET/POST
    *
    */
-  // todo: add get hotproduct download
+  async getHotProductsDownload(
+    args: Affiliate_Hotproducts_Download_Params,
+  ): Promise<Affiliate_Hotproducts_Download_Result | undefined> {
+    return await this.execute("aliexpress.affiliate.hotproduct.download", args);
+  }
 
   /**
    *
@@ -92,7 +104,7 @@ export class AEAffiliateClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.order.get&methodType=GET/POST
    *
    */
-  async getOrderInfo(
+  async orderInfo(
     args: Affiliate_Order_Info_Params,
   ): Promise<Affiliate_Order_Info_Result | undefined> {
     return await this.execute("aliexpress.affiliate.order.get", args);
@@ -101,17 +113,25 @@ export class AEAffiliateClient extends AEBaseClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.order.list&methodType=GET/POST
    */
-  // todo: add get order list
+  async ordersList(
+    args: Affiliate_Order_List_Params,
+  ): Promise<Affiliate_Order_List_Result | undefined> {
+    return await this.execute("aliexpress.affiliate.order.list", args);
+  }
 
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.order.listbyindex&methodType=GET/POST
    */
-  // todo: add get order list by index
+  async ordersListByIndex(
+    args: Affiliate_Order_List_ByIdx_Params,
+  ): Promise<Affiliate_Order_List_ByIdx_Result | undefined> {
+    return await this.execute("aliexpress.affiliate.order.listbyindex", args);
+  }
 
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.productdetail.get&methodType=GET/POST
    */
-  async getProductDetails(
+  async productDetails(
     args: Affiliate_Product_Details_Params,
   ): Promise<Affiliate_Product_Details_Result | undefined> {
     return await this.execute("aliexpress.affiliate.productdetail.get", args);
@@ -129,5 +149,9 @@ export class AEAffiliateClient extends AEBaseClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.product.smartmatch&methodType=GET/POST
    */
-  // todo: add smart match products
+  async smartMatchProducts(
+    args: Affiliate_Smart_Match_Products_Params,
+  ): Promise<Affiliate_Smart_Match_Products_Result | undefined> {
+    return await this.execute("aliexpress.affiliate.product.smartmatch", args);
+  }
 }

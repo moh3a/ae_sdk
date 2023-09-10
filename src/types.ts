@@ -33,10 +33,14 @@ export type AFFILIATE_API_NAMES =
   | "aliexpress.affiliate.category.get"
   | "aliexpress.affiliate.featuredpromo.get"
   | "aliexpress.affiliate.featuredpromo.products.get"
+  | "aliexpress.affiliate.hotproduct.download"
   | "aliexpress.affiliate.hotproduct.query"
   | "aliexpress.affiliate.order.get"
+  | "aliexpress.affiliate.order.list"
+  | "aliexpress.affiliate.order.listbyindex"
   | "aliexpress.affiliate.productdetail.get"
-  | "aliexpress.affiliate.product.query";
+  | "aliexpress.affiliate.product.query"
+  | "aliexpress.affiliate.product.smartmatch";
 
 export type SYSTEM_API_NAMES =
   | "/auth/token/security/create"
@@ -92,14 +96,22 @@ export type AE_AFFILIATE_EXECUTE_FN_PARAMS<T extends AFFILIATE_API_NAMES> =
     ? Affiliate_Featuredpromo_Info_Params
     : T extends "aliexpress.affiliate.featuredpromo.products.get"
     ? Affiliate_Featured_Promo_Products_Params
+    : T extends "aliexpress.affiliate.hotproduct.download"
+    ? Affiliate_Hotproducts_Download_Params
     : T extends "aliexpress.affiliate.hotproduct.query"
     ? Affiliate_Hotproducts_Params
     : T extends "aliexpress.affiliate.order.get"
     ? Affiliate_Order_Info_Params
+    : T extends "aliexpress.affiliate.order.list"
+    ? Affiliate_Order_List_Params
+    : T extends "aliexpress.affiliate.order.listbyindex"
+    ? Affiliate_Order_List_ByIdx_Params
     : T extends "aliexpress.affiliate.productdetail.get"
     ? Affiliate_Product_Details_Params
     : T extends "aliexpress.affiliate.product.query"
     ? Affiliate_Products_Params
+    : T extends "aliexpress.affiliate.product.smartmatch"
+    ? Affiliate_Smart_Match_Products_Params
     : unknown;
 
 export type AE_EXECUTE_FN_PARAMS<T extends AE_API_NAMES> =
@@ -152,14 +164,22 @@ export type AE_AFFILIATE_EXECUTE_FN_RESULT<T extends AFFILIATE_API_NAMES> =
     ? Affiliate_Featuredpromo_Info_Result
     : T extends "aliexpress.affiliate.featuredpromo.products.get"
     ? Affiliate_Featured_Promo_Products_Result
+    : T extends "aliexpress.affiliate.hotproduct.download"
+    ? Affiliate_Hotproducts_Download_Result
     : T extends "aliexpress.affiliate.hotproduct.query"
     ? Affiliate_Hotproducts_Result
     : T extends "aliexpress.affiliate.order.get"
     ? Affiliate_Order_Info_Result
+    : T extends "aliexpress.affiliate.order.list"
+    ? Affiliate_Order_List_Result
+    : T extends "aliexpress.affiliate.order.listbyindex"
+    ? Affiliate_Order_List_ByIdx_Result
     : T extends "aliexpress.affiliate.productdetail.get"
     ? Affiliate_Product_Details_Result
     : T extends "aliexpress.affiliate.product.query"
     ? Affiliate_Products_Result
+    : T extends "aliexpress.affiliate.product.smartmatch"
+    ? Affiliate_Smart_Match_Products_Result
     : unknown;
 
 export type AE_EXECUTE_FN_RESULT<T extends AE_API_NAMES> =
@@ -1105,3 +1125,154 @@ export interface Affiliate_Order_Info_Result {
     resp_msg?: string;
   };
 }
+
+/**
+ * AFFILIATE API
+ * GET ORDER LIST
+ */
+export interface Affiliate_Order_List_Params {
+  /** The type of time you are querying: Payment Completed Time(The time of payment for the order), Buyer Confirmed Receipt Time(The time when the buyer confirms receipt) Completed Settlement Time(The time when commission is paid into Account Balance) */
+  time_type?: string;
+  /** API signature */
+  app_signature?: string;
+  /** End time, PST time */
+  end_time: string;
+  /** Respond parameter list. eg: commission_rate,sale_price */
+  fields?: string;
+  locale_site?: string;
+  page_no?: number;
+  page_size?: number;
+  /** Start time, PST time */
+  start_time: string;
+  /** Order status: Payment Completed(Buyer paid successfully), Buyer Confirmed Receipt(This status only change when:Buyer confirms receipt and settlement task begins which is manually executed by our operation team), Completed Settlement(Orders have been verified and commission has been paid), Invalid(Orders will not be settled including buyer refunds, order risks, antispam/penalty appeal failed, antispam/penalty appeal overdue, order not settled being over 180 days apart from the Completed Payment Time (such as in abnormal state like dispute), etc.) */
+  status: string;
+}
+
+export interface Affiliate_Order_List {
+  total_page_no: number;
+  total_record_count: number;
+  current_page_no: number;
+  current_record_count: number;
+  orders: Affiliate_Order_Details[];
+}
+
+export interface Affiliate_Order_List_Result {
+  resp_result: {
+    result: Affiliate_Order_List;
+    resp_code?: number;
+    resp_msg?: string;
+  };
+}
+
+/**
+ * AFFILIATE API
+ * GET ORDER LIST BY INDEX
+ */
+export interface Affiliate_Order_List_ByIdx_Params {
+  /** The type of time you are querying: Payment Completed Time(The time of payment for the order), Buyer Confirmed Receipt Time(The time when the buyer confirms receipt) Completed Settlement Time(The time when commission is paid into Account Balance) */
+  time_type?: string;
+  /** API signature */
+  app_signature?: string;
+  /** End time, PST time */
+  end_time: string;
+  /** Respond parameter list. eg: commission_rate,sale_price */
+  fields?: string;
+  page_size?: number;
+  /** Start time, PST time */
+  start_time: string;
+  /** Order status: Payment Completed(Buyer paid successfully), Buyer Confirmed Receipt(This status only change when:Buyer confirms receipt and settlement task begins which is manually executed by our operation team), Completed Settlement(Orders have been verified and commission has been paid), Invalid(Orders will not be settled including buyer refunds, order risks, antispam/penalty appeal failed, antispam/penalty appeal overdue, order not settled being over 180 days apart from the Completed Payment Time (such as in abnormal state like dispute), etc.) */
+  status: string;
+  /** Query index start value: if not passed, You can only check the first page */
+  start_query_index_id?: string;
+}
+
+export interface Affiliate_Order_List_ByIdx {
+  min_query_index_id: string;
+  max_query_index_id: string;
+  current_record_count: number;
+  orders: Affiliate_Order_Details[];
+}
+
+export interface Affiliate_Order_List_ByIdx_Result {
+  resp_result: {
+    result: Affiliate_Order_List_ByIdx;
+    resp_code?: number;
+    resp_msg?: string;
+  };
+}
+
+/**
+ * AFFILIATE API
+ * GET HOTPRODUCT DOWNLOAD
+ */
+export interface Affiliate_Hotproducts_Download_Params {
+  /** API signature */
+  app_signature?: string;
+  /** Category ID, you can get category ID via "get category" API https://developers.aliexpress.com/en/doc.htm?docId=45801&docType=2 */
+  category_id: string;
+  /** Respond parameter list. eg: commission_rate,sale_price */
+  fields?: string;
+  /** Local site：global, it_site, es_site, ru_site */
+  locale_site?: string;
+  page_no?: number;
+  page_size?: number;
+  /** Target Currency:USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW,ILS,THB,CLP,VND */
+  target_currency?: string;
+  /** Target Language:EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN */
+  target_language?: string;
+  /** Your trackingID */
+  tracking_id?: string;
+  /**  The Ship to country. Filter products that can be sent to that country; Returns the price according to the country’s tax rate policy.*/
+  country?: string;
+}
+
+export interface Affiliate_Hotproducts_Download {
+  current_page_no: number;
+  current_record_count: number;
+  products: Affiliate_Base_Product_Details[];
+}
+
+export interface Affiliate_Hotproducts_Download_Result {
+  resp_result: {
+    result: Affiliate_Hotproducts_Download;
+    resp_code?: number;
+    resp_msg?: string;
+  };
+}
+
+/**
+ * AFFILIATE API
+ * SMART MATCH PRODUCTS
+ */
+export interface Affiliate_Smart_Match_Products_Params {
+  /** App information */
+  app?: string;
+  /** API signature */
+  app_signature?: string;
+  /** Device infomation */
+  device?: string;
+  /** adid or idfa, for more information please refer to https://support.google.com/admanager/answer/6238701 Can be null, if it is null, it can be recommended based on keywords or product ID */
+  device_id: string;
+  /** Respond parameter list, eg: commission_rate,sale_price */
+  fields?: string;
+  /** Recommend products by keywords. eg: mp3 */
+  keywords?: string;
+  /** Request page number */
+  page_no?: number;
+  /** Product ID, matching related products product ID */
+  product_id?: string;
+  /** site information */
+  site?: string;
+  /** Target Currency: USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW,ILS,THB,CLP,VND */
+  target_currency?: string;
+  /** Target Languages: EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN */
+  target_language?: string;
+  tracking_id?: string;
+  /** user id */
+  user?: string;
+  /** The Ship to country. Filter products that can be sent to that country; Returns the price according to the country’s tax rate policy. */
+  country?: string;
+}
+
+export interface Affiliate_Smart_Match_Products_Result
+  extends Affiliate_Hotproducts_Download_Result {}
