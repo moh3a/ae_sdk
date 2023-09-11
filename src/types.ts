@@ -1,3 +1,11 @@
+export type ResultType<K> = Promise<
+  | {
+      ok: true;
+      data: K;
+    }
+  | { ok: false; message: string }
+>;
+
 /**
  * ALIEXPRESS SERVICES
  */
@@ -20,13 +28,18 @@ export type AE_API_NAMES =
   | SYSTEM_API_NAMES;
 
 export type DS_API_NAMES =
+  | "aliexpress.logistics.buyer.freight.calculate"
+  | "aliexpress.logistics.ds.trackinginfo.query"
+  | "aliexpress.ds.add.info"
+  | "aliexpress.ds.image.search"
   | "aliexpress.ds.recommend.feed.get"
-  | "aliexpress.ds.product.get"
-  | "aliexpress.postproduct.redefining.findaeproductbyidfordropshipper"
   | "aliexpress.trade.buy.placeorder"
   | "aliexpress.ds.trade.order.get"
-  | "aliexpress.logistics.buyer.freight.calculate"
-  | "aliexpress.logistics.ds.trackinginfo.query";
+  | "aliexpress.ds.feedname.get"
+  | "aliexpress.ds.category.get"
+  | "aliexpress.ds.commissionorder.listbyindex"
+  | "aliexpress.ds.member.orderdata.submit"
+  | "aliexpress.ds.product.get";
 
 export type AFFILIATE_API_NAMES =
   | "aliexpress.affiliate.link.generate"
@@ -71,20 +84,30 @@ export type AE_SYSTEM_EXECUTE_FN_PARAMS<T extends SYSTEM_API_NAMES> =
     : unknown;
 
 export type AE_DS_EXECUTE_FN_PARAMS<T extends DS_API_NAMES> =
-  T extends "aliexpress.ds.recommend.feed.get"
+  T extends "aliexpress.logistics.buyer.freight.calculate"
+    ? DS_ShippingAPI_Shipping_Info_Params
+    : T extends "aliexpress.logistics.ds.trackinginfo.query"
+    ? DS_ShippingAPI_Tracking_Info_Params
+    : T extends "aliexpress.ds.add.info"
+    ? DS_Add_Info_Params
+    : T extends "aliexpress.ds.image.search"
+    ? DS_Image_Search_Params
+    : T extends "aliexpress.ds.recommend.feed.get"
     ? DS_ProductAPI_Recommended_Products_Params
-    : T extends "aliexpress.ds.product.get"
-    ? DS_ProductAPI_Product_Params
-    : T extends "aliexpress.postproduct.redefining.findaeproductbyidfordropshipper"
-    ? DS_ProductAPI_Product_Detail_Params
     : T extends "aliexpress.trade.buy.placeorder"
     ? DS_OrderAPI_Place_Order_Params
     : T extends "aliexpress.ds.trade.order.get"
     ? DS_OrderAPI_Get_Order_Params
-    : T extends "aliexpress.logistics.buyer.freight.calculate"
-    ? DS_ShippingAPI_Shipping_Info_Params
-    : T extends "aliexpress.logistics.ds.trackinginfo.query"
-    ? DS_ShippingAPI_Tracking_Info_Params
+    : T extends "aliexpress.ds.feedname.get"
+    ? DS_Feedname_Params
+    : T extends "aliexpress.ds.category.get"
+    ? Affiliate_Categories_Params
+    : T extends "aliexpress.ds.commissionorder.listbyindex"
+    ? DS_Orders_ByIdx_Params
+    : T extends "aliexpress.ds.member.orderdata.submit"
+    ? DS_Order_Submit_Params
+    : T extends "aliexpress.ds.product.get"
+    ? DS_ProductAPI_Product_Params
     : unknown;
 
 export type AE_AFFILIATE_EXECUTE_FN_PARAMS<T extends AFFILIATE_API_NAMES> =
@@ -139,20 +162,30 @@ export type AE_SYSTEM_EXECUTE_FN_RESULT<T extends SYSTEM_API_NAMES> =
     : unknown;
 
 export type AE_DS_EXECUTE_FN_RESULT<T extends DS_API_NAMES> =
-  T extends "aliexpress.ds.recommend.feed.get"
+  T extends "aliexpress.logistics.buyer.freight.calculate"
+    ? DS_ShippingAPI_Shipping_Info_Result
+    : T extends "aliexpress.logistics.ds.trackinginfo.query"
+    ? DS_ShippingAPI_Tracking_Info_Result
+    : T extends "aliexpress.ds.add.info"
+    ? DS_Add_Info_Result
+    : T extends "aliexpress.ds.image.search"
+    ? DS_Image_Search_Result
+    : T extends "aliexpress.ds.recommend.feed.get"
     ? DS_ProductAPI_Recommended_Products_Result
-    : T extends "aliexpress.ds.product.get"
-    ? DS_ProductAPI_Product_Result
-    : T extends "aliexpress.postproduct.redefining.findaeproductbyidfordropshipper"
-    ? DS_ProductAPI_Product_Detail_Result
     : T extends "aliexpress.trade.buy.placeorder"
     ? DS_OrderAPI_Place_Order_Result
     : T extends "aliexpress.ds.trade.order.get"
     ? DS_OrderAPI_Get_Order_Result
-    : T extends "aliexpress.logistics.buyer.freight.calculate"
-    ? DS_ShippingAPI_Shipping_Info_Result
-    : T extends "aliexpress.logistics.ds.trackinginfo.query"
-    ? DS_ShippingAPI_Tracking_Info_Result
+    : T extends "aliexpress.ds.feedname.get"
+    ? DS_Feedname_Result
+    : T extends "aliexpress.ds.category.get"
+    ? Affiliate_Categories_Result
+    : T extends "aliexpress.ds.commissionorder.listbyindex"
+    ? DS_Orders_ByIdx_Result
+    : T extends "aliexpress.ds.member.orderdata.submit"
+    ? DS_Order_Submit_Result
+    : T extends "aliexpress.ds.product.get"
+    ? DS_ProductAPI_Product_Result
     : unknown;
 
 export type AE_AFFILIATE_EXECUTE_FN_RESULT<T extends AFFILIATE_API_NAMES> =
@@ -207,7 +240,6 @@ export type AE_EXECUTE_FN_RESULT<T extends AE_API_NAMES> =
 export interface PublicParams {
   app_key: string;
   session: string;
-  // access_token: string;
   timestamp: number;
   sign_method: "hmac" | "md5" | "sha256";
   method: AE_API_NAMES;
@@ -216,11 +248,26 @@ export interface PublicParams {
 }
 
 export interface AE_Base_Client {
+  /**
+   * @param {String} app_key Indicates the AppKey allocated by Open.Aliexpress to an application. An ISV can choose Open Platform Console > Application Management > Overview to check the AppKey and AppSecret of the formal environment.
+   * @link https://open.aliexpress.com/doc/doc.htm?nodeId=27493&docId=118729#/?docId=732
+   */
   app_key: string;
+  /**
+   * @param {String} app_key Indicates the AppSecret allocated by Open.Aliexpress to an application. An ISV can choose Open Platform Console > Application Management > Overview to check the AppKey and AppSecret of the formal environment.
+   * @link https://open.aliexpress.com/doc/doc.htm?nodeId=27493&docId=118729#/?docId=732
+   */
   app_secret: string;
+  /**
+   * @param {String} session Indicates the authorization granted by the TOP to an application after a user logs in and grants authorization successfully.
+   * @link https://open.aliexpress.com/doc/doc.htm?nodeId=27493&docId=118729#/?docId=730
+   */
   session: string;
-  // access_token: string;
   url?: string;
+  /**
+   * @param {String} format Indicates the response format. The default value is xml. The value can be set to xml or json.
+   * @default json
+   */
   format?: AE_Response_Format;
 }
 
@@ -238,6 +285,20 @@ export type AE_Response_Format = "xml" | "json";
 /**
  * SYSTEM SERVICES
  * GENERATE SECURITY TOKEN
+ */
+
+/**
+ * @param {String} account_id
+ * @param {String} seller_id
+ * @param {String} user_id
+ * @param {String} sp
+ * @param {String} access_token
+ * @param {String} refresh_token
+ * @param {Number} expires_in
+ * @param {Number} expire_time
+ * @param {Number} refresh_token_valid_time
+ * @param {Number} refresh_expires_in
+ * @param {String} locale
  */
 export interface AES_Base_Access_Token_Result {
   account_id: string;
@@ -317,8 +378,17 @@ export interface AES_Refresh_Token_Result extends AES_Access_Token_Result {}
  */
 export interface DS_ProductAPI_Recommended_Products_Params {
   country?: string;
-  target_currency?: "USD" | "EUR";
-  target_language?: "EN" | "FR" | "AR";
+  /**
+   * @description target currency:USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY,
+   */
+  target_currency?: string;
+  /**
+   * @description target language:EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN
+   */
+  target_language?: string;
+  /**
+   * @description record count of each page, 1 - 50
+   */
   page_size?: string;
   page_no?: string;
   sort?:
@@ -374,9 +444,76 @@ export interface DS_ProductAPI_Recommended_Products {
 }
 
 export interface DS_ProductAPI_Recommended_Products_Result {
-  result: DS_ProductAPI_Recommended_Products;
-  rsp_msg: string;
+  aliexpress_ds_recommend_feed_get_response: {
+    result: DS_ProductAPI_Recommended_Products;
+    rsp_msg?: string;
+    rsp_code: string;
+    request_id: string;
+  };
+}
+
+/**
+ * DROPSHIPPER API
+ * FEEDNAMES
+ */
+export interface DS_Feedname_Params extends Affiliate_Categories_Params {}
+
+export interface DS_Feedname_Promo_Details {
+  promo_name: string;
+  promo_desc: string;
+  product_num: number;
+}
+
+export interface DS_Feedname {
+  current_record_count: number;
+  promos: DS_Feedname_Promo_Details[];
+}
+
+export interface DS_Feedname_Result {
+  aliexpress_ds_feedname_get_response: {
+    request_id: string;
+    resp_result: {
+      result: DS_Feedname;
+      resp_code: number;
+      resp_msg: string;
+    };
+  };
+}
+
+/**
+ * DROPSHIPPER API
+ * IMAGE SEARCH
+ */
+
+export interface DS_Image_Search_Params {
+  /** @description EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IW,IN */
+  target_language?: string;
+  /** @description USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW */
+  target_currency?: string;
+  /** @description count of products， max 150. */
+  product_cnt?: number;
+  /** @description SALE_PRICE_ASC, SALE_PRICE_DESC, LAST_VOLUME_ASC, LAST_VOLUME_DESC */
+  sort?:
+    | "SALE_PRICE_ASC"
+    | "SALE_PRICE_DESC"
+    | "LAST_VOLUME_ASC"
+    | "LAST_VOLUME_DESC";
+  /** @description Ship to Country */
+  shpt_to?: string;
+  /** @description image name in fileserver，max size 100 KB */
+  image_file_bytes: Uint8Array;
+}
+
+export interface DS_Image_Search {
+  products: DS_ProductAPI_Recommended_Product[];
+  total_record_count: number;
+}
+
+export interface DS_Image_Search_Result {
+  data: DS_Image_Search;
   rsp_code: string;
+  rsp_msg: string;
+  total_record_count: number;
 }
 
 /**
@@ -465,36 +602,6 @@ export interface DS_ProductAPI_Product_Result {
   rsp_code: string;
 }
 
-/**
- *
- * PRODUCT API
- * PRODUCT DETAILS
- *
- */
-
-/**
- * Product details
- * @param {String} ship_to_country Country
- * @param {Number} product_id Item ID
- * @param {String} target_currency Target currency
- * @param {String} target_language Target language
- */
-export interface DS_ProductAPI_Product_Detail_Params {
-  product_id: number;
-  local_country?: string;
-  local_language?: string;
-}
-
-export interface DS_ProductAPI_Product_SKU_Properties {
-  sku_property_id: number;
-  sku_property_value: string;
-  sku_property_name: string;
-  property_value_id: number;
-  property_value_id_long: number;
-  property_value_definition_name?: string;
-  sku_image?: string;
-}
-
 export interface DS_ProductAPI_Product_SKU_Variation {
   sku_stock: boolean;
   sku_price: string;
@@ -511,6 +618,16 @@ export interface DS_ProductAPI_Product_SKU_Variation {
   s_k_u_available_stock?: number;
 }
 
+export interface DS_ProductAPI_Product_SKU_Properties {
+  sku_property_id: number;
+  sku_property_value: string;
+  sku_property_name: string;
+  property_value_id: number;
+  property_value_id_long: number;
+  property_value_definition_name?: string;
+  sku_image?: string;
+}
+
 export interface DS_ProductAPI_Product_Attributes {
   attr_name_id: number;
   attr_name: string;
@@ -519,72 +636,6 @@ export interface DS_ProductAPI_Product_Attributes {
   attr_value_unit?: string;
   attr_value_start?: string;
   attr_value_end?: string;
-}
-
-export interface DS_ProductAPI_Store_Info {
-  communication_rating: string;
-  item_as_descriped_rating: string;
-  shipping_speed_rating: string;
-  store_id: number;
-  store_name: string;
-}
-
-export interface DS_ProductAPI_Product_Details {
-  aeop_ae_product_s_k_us: DS_ProductAPI_Product_SKU_Variation[];
-  detail: string;
-  is_success: boolean;
-  product_unit: number;
-  ws_offline_date: string;
-  ws_display: string;
-  category_id: number;
-  aeop_a_e_multimedia: {
-    aeop_a_e_videos: {
-      aeop_ae_video: [
-        {
-          poster_url: string;
-          media_type: string;
-          media_status: string;
-          media_id: number;
-          ali_member_id: number;
-        },
-      ];
-    };
-  };
-  owner_member_id: string;
-  product_status_type: string;
-  aeop_ae_product_propertys: DS_ProductAPI_Product_Attributes[];
-  gross_weight: string;
-  delivery_time: number;
-  ws_valid_num: number;
-  gmt_modified: string;
-  error_message: string;
-  package_type: boolean;
-  aeop_national_quote_configuration: {
-    configuration_type: string;
-    configuration_data: string;
-  };
-  subject: string;
-  base_unit: number;
-  package_length: number;
-  mobile_detail: string;
-  package_height: number;
-  package_width: number;
-  currency_code: string;
-  gmt_create: string;
-  image_u_r_ls: string;
-  product_id: number;
-  error_code: number;
-  product_price: string;
-  item_offer_site_sale_price: string;
-  total_available_stock: number;
-  store_info: DS_ProductAPI_Store_Info;
-  evaluation_count: number;
-  avg_evaluation_rating: string;
-  order_count: number;
-}
-
-export interface DS_ProductAPI_Product_Detail_Result {
-  result: DS_ProductAPI_Product_Details;
 }
 
 /**
@@ -714,11 +765,138 @@ export interface DS_OrderAPI_Get_Order_Result {
 }
 
 /**
+ * DROPSHIPPER API - ORDER
+ * ORDER QUERY BY INDEX
+ */
+export interface DS_Orders_ByIdx_Params {
+  /** End time, PST time */
+  end_time: string;
+  /** Start time, PST time */
+  start_time: string;
+  /** Order status: Payment Completed(Buyer paid successfully), Buyer Confirmed Receipt(This status only change when:Buyer confirms receipt and settlement task begins which is manually executed by our operation team), Completed Settlement(Orders have been verified and commission has been paid), Invalid(Orders will not be settled including buyer refunds, order risks, antispam/penalty appeal failed, antispam/penalty appeal overdue, order not settled being over 180 days apart from the Completed Payment Time (such as in abnormal state like dispute), etc.) */
+  status: string;
+  /** Query index start value: if not passed, You can only check the first page */
+  start_query_index_id?: string;
+  page_size?: number;
+  page_no?: number;
+}
+
+export interface DS_Orders_ByIdx_Order_Details {
+  publisher_id: number;
+  estimated_finished_commission: string;
+  estimated_paid_commission: number;
+  order_number: number;
+  is_hot_product: "Y" | "N";
+  parent_order_number: number;
+  publisher_settled_currency: string;
+  category_id: number;
+  item_title: string;
+  item_detail_url: string;
+  item_main_image_url: string;
+  item_count: "100";
+  created_time: string;
+  finished_time: string;
+  item_id: number;
+  paid_time: string;
+  is_new_buyer: "Y" | "N";
+  ship_to_country: string;
+  sub_order_id: number;
+  effect_status: string;
+  incentive_commission_rate: string;
+  estimated_incentive_paid_commission: string;
+  is_affiliate_product: "Y" | "N";
+  paid_amount: number;
+  effect_detail_status: string;
+  estimated_incentive_finished_commission: string;
+  commission_rate: string;
+  finished_amount: string;
+  order_id: number;
+}
+
+export interface DS_Orders_ByIdx {
+  current_record_count: number;
+  min_query_index_id: string;
+  max_query_index_id: string;
+  orders: DS_Orders_ByIdx_Order_Details[];
+  current_page_no: number;
+}
+
+export interface DS_Orders_ByIdx_Result {
+  result: DS_Orders_ByIdx;
+  rsp_code: number;
+  rsp_msg: string;
+}
+
+/**
+ * DROPSHIPPING API
+ * ORDER SUBMIT
+ */
+export interface DS_Order_Submit_Params {
+  /** AE product ID */
+  ae_product_id: string;
+  /** Off-site payment time, GMT time, format YYYYMMDD:HHMMSS */
+  paytime: string;
+  /** AE order id */
+  ae_orderid: string;
+  /** SKU sales amount outside the station, to 2 decimal places */
+  product_amount: string;
+  /** Order sales amount outside the station, keep 2 decimal places */
+  order_amount: string;
+  /** AE product SKU information, SKU key-value pair: "200000182:193;200007763:201336100" */
+  ae_sku_info: string;
+  /** Commodity site url */
+  product_url: string;
+}
+
+export interface DS_Order_Submit_Result {
+  result: boolean;
+  rsp_msg: string;
+  rsp_code: number;
+}
+
+/**
+ * DROPSHIPPING API
+ * ADD DROPSHIPPING INFO
+ */
+export interface DS_Add_Info_Arguments {
+  /** Extended Information */
+  extend_info?: Record<string, string | number | boolean>;
+  /** shop address */
+  store_url?: string;
+  /** user signature */
+  app_signature?: string;
+}
+
+export interface DS_Add_Info_Params {
+  param0: string;
+}
+
+export interface DS_Add_Info_Result {
+  aliexpress_ds_add_info_response: {
+    result: boolean;
+    result_msg: string;
+    result_code: number;
+    request_id: string;
+  };
+}
+
+/**
  *
  * SHIPPING API
  * SHIPPING INFO
  *
  */
+export interface DS_ShippingAPI_Shipping_Info_Arguments {
+  sku_id?: string;
+  city_code?: string;
+  country_code: string;
+  product_id: number;
+  product_num: number;
+  province_code?: string;
+  send_goods_country_code: string;
+  price?: string;
+  price_currency?: string;
+}
 
 export interface DS_ShippingAPI_Shipping_Info_Params {
   /**
@@ -751,11 +929,20 @@ export interface DS_ShippingAPI_Shipping_Details {
   service_name: string;
 }
 
+export type DS_ShippingAPI_Shipping_Info_Response =
+  | {
+      success: true;
+      aeop_freight_calculate_result_for_buyer_d_t_o_list: DS_ShippingAPI_Shipping_Details[];
+    }
+  | {
+      success: false;
+      error_desc: string;
+    };
+
 export interface DS_ShippingAPI_Shipping_Info_Result {
-  result: {
-    aeop_freight_calculate_result_for_buyer_d_t_o_list: DS_ShippingAPI_Shipping_Details[];
-    error_desc: string;
-    success: boolean;
+  aliexpress_logistics_buyer_freight_calculate_response: {
+    result: DS_ShippingAPI_Shipping_Info_Response;
+    request_id: string;
   };
 }
 
@@ -791,13 +978,20 @@ export interface DS_ShippingAPI_Tracking_Event {
   event_date: string;
 }
 
+export type DS_ShippingAPI_Tracking_Info_Response =
+  | {
+      result_success: true;
+      details: DS_ShippingAPI_Tracking_Event[];
+      official_website: string;
+    }
+  | {
+      result_success: false;
+      error_desc: string;
+    };
+
 export interface DS_ShippingAPI_Tracking_Info_Result {
-  details: {
-    details: DS_ShippingAPI_Tracking_Event[];
-  };
-  official_website: string;
-  error_desc: string;
-  result_success: boolean;
+  request_id: string;
+  aliexpress_logistics_ds_trackinginfo_query_response: DS_ShippingAPI_Tracking_Info_Response;
 }
 
 /**

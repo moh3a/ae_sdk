@@ -7,6 +7,7 @@ import {
   AE_EXECUTE_FN_RESULT,
   AE_Response_Format,
   PublicParams,
+  ResultType,
 } from "../types";
 
 export class AEBaseClient implements AE_Base_Client {
@@ -39,7 +40,7 @@ export class AEBaseClient implements AE_Base_Client {
       .toUpperCase();
   }
 
-  protected async call<T extends PublicParams, K>(params: T) {
+  protected async call<T extends PublicParams, K>(params: T): ResultType<K> {
     try {
       let basestring = this.url;
       let sorted = Object.keys(params).sort();
@@ -59,10 +60,18 @@ export class AEBaseClient implements AE_Base_Client {
             );
       }
       const res = await fetch(basestring, { method: "POST" });
-      return (await res.json()) as K;
+      const data = await res.json();
+      return res.ok
+        ? { ok: true, data }
+        : {
+            ok: false,
+            message: "Bad request.",
+          };
     } catch (error) {
-      console.error(error);
-      return;
+      return {
+        ok: false,
+        message: "Internal error.",
+      };
     }
   }
 

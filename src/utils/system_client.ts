@@ -8,6 +8,7 @@ import {
   AES_Refresh_Security_Token_Result,
   AES_Refresh_Token_Params,
   AES_Refresh_Token_Result,
+  ResultType,
 } from "../types";
 import { AEBaseClient } from "./client";
 
@@ -23,7 +24,7 @@ export class AESystemClient extends AEBaseClient {
    */
   async generateSecurityToken(
     args: AES_Generate_Security_Token_Params,
-  ): Promise<AES_Generate_Security_Token_Result | undefined> {
+  ): ResultType<AES_Generate_Security_Token_Result> {
     return await this.execute("/auth/token/security/create", args);
   }
 
@@ -34,7 +35,7 @@ export class AESystemClient extends AEBaseClient {
    */
   async generateToken(
     args: AES_Generate_Token_Params,
-  ): Promise<AES_Generate_Token_Result | undefined> {
+  ): ResultType<AES_Generate_Token_Result> {
     return await this.execute("/auth/token/create", args);
   }
 
@@ -45,7 +46,7 @@ export class AESystemClient extends AEBaseClient {
    */
   async refreshSecurityToken(
     args: AES_Refresh_Security_Token_Params,
-  ): Promise<AES_Refresh_Security_Token_Result | undefined> {
+  ): ResultType<AES_Refresh_Security_Token_Result> {
     return await this.execute("/auth/token/security/refresh", args);
   }
 
@@ -56,7 +57,7 @@ export class AESystemClient extends AEBaseClient {
    */
   async refreshToken(
     args: AES_Refresh_Token_Params,
-  ): Promise<AES_Refresh_Token_Result | undefined> {
+  ): ResultType<AES_Refresh_Token_Result> {
     return await this.execute("/auth/token/refresh", args);
   }
 }
