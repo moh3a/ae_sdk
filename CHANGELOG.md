@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.3.4
+
+### Patch Changes
+
+- Fix dropshipping methods result types
+
 ## 0.3.3
 
 ### Patch Changes

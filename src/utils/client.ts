@@ -3,11 +3,10 @@ import { createHmac } from "crypto";
 import {
   AE_API_NAMES,
   AE_Base_Client,
-  AE_EXECUTE_FN_PARAMS,
-  AE_EXECUTE_FN_RESULT,
   AE_Response_Format,
   PublicParams,
-  ResultType,
+  AliexpressMethod,
+  Result,
 } from "../types";
 
 export class AEBaseClient implements AE_Base_Client {
@@ -40,7 +39,7 @@ export class AEBaseClient implements AE_Base_Client {
       .toUpperCase();
   }
 
-  protected async call<T extends PublicParams, K>(params: T): ResultType<K> {
+  protected async call<T extends PublicParams, K>(params: T): Result<K> {
     try {
       let basestring = this.url;
       let sorted = Object.keys(params).sort();
@@ -61,12 +60,13 @@ export class AEBaseClient implements AE_Base_Client {
       }
       const res = await fetch(basestring, { method: "POST" });
       const data = await res.json();
-      return res.ok
-        ? { ok: true, data }
-        : {
-            ok: false,
-            message: "Bad request.",
-          };
+      if (data.error_response || !res.ok)
+        return {
+          ok: false,
+          message: "Bad request.",
+          request_id: data.error_response.request_id,
+        };
+      return { ok: true, data };
     } catch (error) {
       return {
         ok: false,
@@ -77,9 +77,9 @@ export class AEBaseClient implements AE_Base_Client {
 
   protected async execute<K extends AE_API_NAMES>(
     method: K,
-    params: AE_EXECUTE_FN_PARAMS<K>,
-  ) {
-    const parameters: AE_EXECUTE_FN_PARAMS<K> & PublicParams = {
+    params: AliexpressMethod<K>["params"],
+  ): Result<AliexpressMethod<K>["result"]> {
+    const parameters: AliexpressMethod<K>["params"] & PublicParams = {
       ...params,
       method,
       session: this.session,
@@ -91,8 +91,8 @@ export class AEBaseClient implements AE_Base_Client {
     parameters.sign = this.sign(parameters);
 
     return await this.call<
-      AE_EXECUTE_FN_PARAMS<K> & PublicParams,
-      AE_EXECUTE_FN_RESULT<K>
+      AliexpressMethod<K>["params"] & PublicParams,
+      AliexpressMethod<K>["result"]
     >(parameters);
   }
 }

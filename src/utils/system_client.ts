@@ -1,14 +1,9 @@
 import {
   AE_Base_Client,
   AES_Generate_Security_Token_Params,
-  AES_Generate_Security_Token_Result,
   AES_Generate_Token_Params,
-  AES_Generate_Token_Result,
   AES_Refresh_Security_Token_Params,
-  AES_Refresh_Security_Token_Result,
   AES_Refresh_Token_Params,
-  AES_Refresh_Token_Result,
-  ResultType,
 } from "../types";
 import { AEBaseClient } from "./client";
 
@@ -22,9 +17,7 @@ export class AESystemClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=3&path=/auth/token/security/create&methodType=GET/POST
    *
    */
-  async generateSecurityToken(
-    args: AES_Generate_Security_Token_Params,
-  ): ResultType<AES_Generate_Security_Token_Result> {
+  async generateSecurityToken(args: AES_Generate_Security_Token_Params) {
     return await this.execute("/auth/token/security/create", args);
   }
 
@@ -33,9 +26,7 @@ export class AESystemClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=3&path=/auth/token/create&methodType=GET/POST
    *
    */
-  async generateToken(
-    args: AES_Generate_Token_Params,
-  ): ResultType<AES_Generate_Token_Result> {
+  async generateToken(args: AES_Generate_Token_Params) {
     return await this.execute("/auth/token/create", args);
   }
 
@@ -44,9 +35,7 @@ export class AESystemClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=3&path=/auth/token/security/refresh&methodType=GET/POST
    *
    */
-  async refreshSecurityToken(
-    args: AES_Refresh_Security_Token_Params,
-  ): ResultType<AES_Refresh_Security_Token_Result> {
+  async refreshSecurityToken(args: AES_Refresh_Security_Token_Params) {
     return await this.execute("/auth/token/security/refresh", args);
   }
 
@@ -55,9 +44,7 @@ export class AESystemClient extends AEBaseClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=3&path=/auth/token/refresh&methodType=GET/POST
    *
    */
-  async refreshToken(
-    args: AES_Refresh_Token_Params,
-  ): ResultType<AES_Refresh_Token_Result> {
+  async refreshToken(args: AES_Refresh_Token_Params) {
     return await this.execute("/auth/token/refresh", args);
   }
 }

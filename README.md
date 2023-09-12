@@ -59,5 +59,5 @@ console.log(result);
 ## Todo
 
 - Add in code documentation using `jsdoc`;
-- Fix method result types
+- Fix method result types (affiliate)
 - Add unit tests;
