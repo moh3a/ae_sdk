@@ -2,12 +2,11 @@ import {
   AE_Base_Client,
   AE_Logistics_Address,
   AE_Product_Item,
-  DS_ProductAPI_Recommended_Products_Params,
-  DS_ProductAPI_Product_Params,
-  DS_ShippingAPI_Shipping_Info_Arguments,
-  DS_ShippingAPI_Tracking_Info_Params,
-  DS_OrderAPI_Get_Order_Params,
-  DS_Image_Search_Params,
+  DS_Recommended_Products_Params,
+  DS_Product_Params,
+  DS_Shipping_Info_Arguments,
+  DS_Tracking_Info_Params,
+  DS_Get_Order_Params,
   DS_Feedname_Params,
   Affiliate_Categories_Params,
   DS_Orders_ByIdx_Params,
@@ -24,7 +23,7 @@ export class DropshipperClient extends AESystemClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.logistics.buyer.freight.calculate&methodType=GET/POST
    */
-  async shippingInfo(args: DS_ShippingAPI_Shipping_Info_Arguments) {
+  async shippingInfo(args: DS_Shipping_Info_Arguments) {
     return await this.execute("aliexpress.logistics.buyer.freight.calculate", {
       param_aeop_freight_calculate_for_buyer_d_t_o: JSON.stringify(args),
     });
@@ -33,7 +32,7 @@ export class DropshipperClient extends AESystemClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.logistics.ds.trackinginfo.query&methodType=GET/POST
    */
-  async trackingInfo(args: DS_ShippingAPI_Tracking_Info_Params) {
+  async trackingInfo(args: DS_Tracking_Info_Params) {
     return await this.execute(
       "aliexpress.logistics.ds.trackinginfo.query",
       args,
@@ -52,16 +51,14 @@ export class DropshipperClient extends AESystemClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.image.search&methodType=GET/POST
    */
-  async searchByImage(args: DS_Image_Search_Params) {
-    return await this.execute("aliexpress.ds.image.search", args);
-  }
+  // async searchByImage(args: DS_Image_Search_Params) {
+  //   return await this.execute("aliexpress.ds.image.search", args);
+  // }
 
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.recommend.feed.get&methodType=GET/POST
    */
-  async queryfeaturedPromoProducts(
-    args: DS_ProductAPI_Recommended_Products_Params,
-  ) {
+  async queryfeaturedPromoProducts(args: DS_Recommended_Products_Params) {
     return await this.execute("aliexpress.ds.recommend.feed.get", args);
   }
 
@@ -86,7 +83,7 @@ export class DropshipperClient extends AESystemClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.trade.ds.order.get&methodType=GET/POST
    */
-  async orderDetails(args: DS_OrderAPI_Get_Order_Params) {
+  async orderDetails(args: DS_Get_Order_Params) {
     return await this.execute("aliexpress.ds.trade.order.get", args);
   }
 
@@ -124,7 +121,7 @@ export class DropshipperClient extends AESystemClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.recommend.feed.get&methodType=GET/POST
    */
-  async productDetails(args: DS_ProductAPI_Product_Params) {
+  async productDetails(args: DS_Product_Params) {
     return await this.execute("aliexpress.ds.product.get", args);
   }
 }

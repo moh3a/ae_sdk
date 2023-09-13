@@ -1,9 +1,18 @@
-import { AE_Platform_Type } from ".";
+import {
+  AE_Currency,
+  AE_Language,
+  AE_Locale_Site,
+  AE_Platform_Type,
+  AE_Sort_Filter,
+  AE_Sort_Promo_Filter,
+  YES_NO,
+} from ".";
 
 /**
  * AFFILIATE API
  * GENERATE AFFILIATE LINKS
  */
+
 export interface Affiliate_Generate_Affiliate_Links_Params {
   /** Promotion link type: 0 for normal link which has standard commission , and 2 for hot link which has hot product commission */
   promotion_link_type: number;
@@ -24,10 +33,12 @@ export interface Affiliate_Generate_Affiliate_Links {
 }
 
 export interface Affiliate_Generate_Affiliate_Links_Result {
-  resp_result: {
-    resp_code?: number;
-    resp_msg?: string;
-    result: Affiliate_Generate_Affiliate_Links;
+  aliexpress_affiliate_link_generate_response: {
+    resp_result: {
+      resp_code?: number;
+      resp_msg?: string;
+      result: Affiliate_Generate_Affiliate_Links;
+    };
   };
 }
 
@@ -49,15 +60,16 @@ export interface Affiliate_Product_Promo_Code_Info {
 
 export interface Affiliate_Base_Product_Params {
   app_signature?: string;
+  /** Respond parameter list. eg: commission_rate,sale_price */
   fields?: string;
-  target_currency?: string;
-  target_language?: string;
+  target_currency?: AE_Currency;
+  target_language?: AE_Language;
   tracking_id?: string;
 }
 
 export interface Affiliate_Base_Product_Details {
   app_sale_price?: string;
-  app_sale_price_currency?: string;
+  app_sale_price_currency?: AE_Currency;
   commission_rate?: string;
   discount?: string;
   evaluate_rate?: string;
@@ -66,21 +78,19 @@ export interface Affiliate_Base_Product_Details {
   hot_product_commission_rate?: string;
   lastest_volume?: number;
   original_price?: string;
-  original_price_currency?: string;
+  original_price_currency?: AE_Currency;
   platform_product_type?: AE_Platform_Type;
   product_detail_url?: string;
   product_id?: number;
   product_main_image_url?: string;
-  product_small_image_urls?: {
-    string: string[];
-  };
+  product_small_image_urls?: string[];
   product_title?: string;
   product_video_url?: string;
   promotion_link?: string;
   promo_code_info: Affiliate_Product_Promo_Code_Info;
   relevant_market_commission_rate: string;
   sale_price: string;
-  sale_price_currency: string;
+  sale_price_currency: AE_Currency;
   second_level_category_id: number;
   second_level_category_name: string;
   shop_id: number;
@@ -88,9 +98,9 @@ export interface Affiliate_Base_Product_Details {
   target_app_sale_price: string;
   target_original_price: string;
   target_sale_price: string;
-  target_original_price_currency: string;
-  target_sale_price_currency: string;
-  target_app_sale_price_currency: string;
+  target_original_price_currency: AE_Currency;
+  target_sale_price_currency: AE_Currency;
+  target_app_sale_price_currency: AE_Currency;
 }
 
 export interface Affiliate_Product_Details
@@ -104,17 +114,21 @@ export interface Affiliate_Product_Details_Params
   country?: string;
 }
 
-export interface Affiliate_Product_Details {
+export interface Affiliate_Product_Details_Records {
   current_record_count: number;
   products: Affiliate_Product_Details[];
 }
 
-export interface Affiliate_Product_Details_Result {
+export interface Affiliate_Product_Details_Response {
   resp_result: {
     resp_code: number;
     resp_msg: string;
-    result: Affiliate_Product_Details;
+    result: Affiliate_Product_Details_Records;
   };
+}
+
+export interface Affiliate_Product_Details_Result {
+  aliexpress_affiliate_productdetail_get_response: Affiliate_Product_Details_Response;
 }
 
 /**
@@ -124,19 +138,21 @@ export interface Affiliate_Product_Details_Result {
 
 export interface Affiliate_Products_Params
   extends Affiliate_Base_Product_Params {
+  /** List of category ID, you can get category ID via "get category" API https://developers.aliexpress.com/en/doc.htm?docId=45801&docType=2 */
   category_ids?: string;
   keywords?: string;
+  /** Filter products by highest price, unit cent */
   max_sale_price?: string;
+  /** Filter products by lowest price, unit cent */
   min_sale_price?: string;
   page_no?: string;
+  /** record count of each page, 1 - 50 */
   page_size?: string;
   platform_product_type?: AE_Platform_Type;
-  sort?:
-    | "SALE_PRICE_ASC"
-    | "SALE_PRICE_DESC"
-    | "LAST_VOLUME_ASC"
-    | "LAST_VOLUME_DESC";
+  sort?: AE_Sort_Filter;
+  /** Estimated delivery days. 3：in 3 days，5：in 5 days，7：in 7 days，10：in 10 days */
   delivery_days?: string;
+  /** The Ship to country. Filter products that can be sent to that country; Returns the price according to the country’s tax rate policy. */
   ship_to_country?: string;
 }
 
@@ -148,12 +164,16 @@ export interface Affiliate_Products {
   total_record_count: number;
 }
 
-export interface Affiliate_Products_Result {
+export interface Affiliate_Products_Response {
   resp_result: {
     resp_code: number;
     resp_msg: string;
-    result: Affiliate_Hotproducts;
+    result: Affiliate_Products;
   };
+}
+
+export interface Affiliate_Products_Result {
+  aliexpress_affiliate_product_query_response: Affiliate_Products_Response;
 }
 
 /**
@@ -164,15 +184,15 @@ export interface Affiliate_Products_Result {
 export interface Affiliate_Hotproducts_Params
   extends Affiliate_Products_Params {}
 
-export interface Affiliate_Hotproducts extends Affiliate_Products {}
-
-export interface Affiliate_Hotproducts_Result
-  extends Affiliate_Products_Result {}
+export interface Affiliate_Hotproducts_Result {
+  aliexpress_affiliate_hotproduct_query_response: Affiliate_Products_Response;
+}
 
 /**
  * AFFILIATE API
  * CATEGORIES
  */
+
 export interface Affiliate_Categories_Params {
   app_signature?: string;
 }
@@ -189,10 +209,12 @@ export interface Affiliate_Categories {
 }
 
 export interface Affiliate_Categories_Result {
-  resp_result: {
-    resp_code: number;
-    resp_msg: string;
-    result: Affiliate_Categories;
+  aliexpress_affiliate_category_get_response: {
+    resp_result: {
+      resp_code: number;
+      resp_msg: string;
+      result: Affiliate_Categories;
+    };
   };
 }
 
@@ -200,6 +222,7 @@ export interface Affiliate_Categories_Result {
  * AFFILIATE API
  * FEATURED PROMO INFO
  */
+
 export interface Affiliate_Featuredpromo_Info_Params
   extends Affiliate_Categories_Params {}
 
@@ -215,9 +238,11 @@ export interface Affiliate_Featuredpromo_Info {
 }
 
 export interface Affiliate_Featuredpromo_Info_Result {
-  resp_code: number;
-  resp_msg: string;
-  result: Affiliate_Featuredpromo_Info;
+  aliexpress_affiliate_featuredpromo_get_response: {
+    resp_code: number;
+    resp_msg: string;
+    result: Affiliate_Featuredpromo_Info;
+  };
 }
 
 /**
@@ -233,36 +258,23 @@ export interface Affiliate_Featured_Promo_Products_Params
   promotion_end_time?: string;
   promotion_name?: string;
   promotion_start_time?: string;
-  sort?:
-    | "commissionAsc"
-    | "commissionDesc"
-    | "priceAsc"
-    | "priceDesc"
-    | "volumeAsc"
-    | "volumeDesc"
-    | "discountAsc"
-    | "discountDesc"
-    | "ratingAsc"
-    | "ratingDesc"
-    | "promotionTimeAsc"
-    | "promotionTimeDesc";
+  sort?: AE_Sort_Promo_Filter;
   country?: string;
 }
 
-export interface Affiliate_Featured_Promo_Product
-  extends Affiliate_Base_Product_Details {}
-
 export interface Affiliate_Featured_Promo_Products_Result {
-  resp_result: {
-    resp_code: number;
-    resp_msg: string;
-    result: {
-      current_page_no: number;
-      current_record_count: number;
-      total_page_no: number;
-      total_record_count: number;
-      is_finished: boolean;
-      products: Affiliate_Featured_Promo_Product[];
+  aliexpress_affiliate_featuredpromo_products_get_response: {
+    resp_result: {
+      resp_code: number;
+      resp_msg: string;
+      result: {
+        current_page_no: number;
+        current_record_count: number;
+        total_page_no: number;
+        total_record_count: number;
+        is_finished: boolean;
+        products: Affiliate_Base_Product_Details[];
+      };
     };
   };
 }
@@ -271,6 +283,7 @@ export interface Affiliate_Featured_Promo_Products_Result {
  * AFFILIATE API
  * GET ORDER INFO
  */
+
 export interface Affiliate_Order_Info_Params {
   app_signature?: string;
   fields?: string;
@@ -283,11 +296,11 @@ export interface Affiliate_Order_Details {
   estimated_paid_commission: number;
   product_count: number;
   order_number: number;
-  is_hot_product: "Y" | "N";
+  is_hot_product: YES_NO;
   parent_order_number: number;
   product_main_image_url: string;
   order_status: string;
-  settled_currency: string;
+  settled_currency: AE_Currency;
   category_id: number;
   product_id: number;
   order_type: string;
@@ -297,14 +310,14 @@ export interface Affiliate_Order_Details {
   completed_settlement_time: string;
   paid_time: string;
   customer_parameters: string;
-  is_new_buyer: "Y" | "N";
+  is_new_buyer: YES_NO;
   ship_to_country: string;
   sub_order_id: number;
   product_title: string;
   incentive_commission_rate: string;
   new_buyer_bonus_commission: number;
   estimated_incentive_paid_commission: number;
-  is_affiliate_product: "Y" | "N";
+  is_affiliate_product: YES_NO;
   paid_amount: number;
   effect_detail_status: string;
   estimated_incentive_finished_commission: number;
@@ -319,10 +332,12 @@ export interface Affiliate_Order_Info {
 }
 
 export interface Affiliate_Order_Info_Result {
-  resp_result: {
-    result: Affiliate_Order_Info;
-    resp_code?: number;
-    resp_msg?: string;
+  aliexpress_affiliate_order_get_response: {
+    resp_result: {
+      result: Affiliate_Order_Info;
+      resp_code?: number;
+      resp_msg?: string;
+    };
   };
 }
 
@@ -330,6 +345,7 @@ export interface Affiliate_Order_Info_Result {
  * AFFILIATE API
  * GET ORDER LIST
  */
+
 export interface Affiliate_Order_List_Params {
   /** The type of time you are querying: Payment Completed Time(The time of payment for the order), Buyer Confirmed Receipt Time(The time when the buyer confirms receipt) Completed Settlement Time(The time when commission is paid into Account Balance) */
   time_type?: string;
@@ -339,7 +355,7 @@ export interface Affiliate_Order_List_Params {
   end_time: string;
   /** Respond parameter list. eg: commission_rate,sale_price */
   fields?: string;
-  locale_site?: string;
+  locale_site?: AE_Locale_Site;
   page_no?: number;
   page_size?: number;
   /** Start time, PST time */
@@ -357,10 +373,12 @@ export interface Affiliate_Order_List {
 }
 
 export interface Affiliate_Order_List_Result {
-  resp_result: {
-    result: Affiliate_Order_List;
-    resp_code?: number;
-    resp_msg?: string;
+  aliexpress_affiliate_order_list_response: {
+    resp_result: {
+      result: Affiliate_Order_List;
+      resp_code?: number;
+      resp_msg?: string;
+    };
   };
 }
 
@@ -368,6 +386,7 @@ export interface Affiliate_Order_List_Result {
  * AFFILIATE API
  * GET ORDER LIST BY INDEX
  */
+
 export interface Affiliate_Order_List_ByIdx_Params {
   /** The type of time you are querying: Payment Completed Time(The time of payment for the order), Buyer Confirmed Receipt Time(The time when the buyer confirms receipt) Completed Settlement Time(The time when commission is paid into Account Balance) */
   time_type?: string;
@@ -394,10 +413,12 @@ export interface Affiliate_Order_List_ByIdx {
 }
 
 export interface Affiliate_Order_List_ByIdx_Result {
-  resp_result: {
-    result: Affiliate_Order_List_ByIdx;
-    resp_code?: number;
-    resp_msg?: string;
+  aliexpress_affiliate_order_listbyindex_response: {
+    resp_result: {
+      result: Affiliate_Order_List_ByIdx;
+      resp_code?: number;
+      resp_msg?: string;
+    };
   };
 }
 
@@ -405,6 +426,7 @@ export interface Affiliate_Order_List_ByIdx_Result {
  * AFFILIATE API
  * GET HOTPRODUCT DOWNLOAD
  */
+
 export interface Affiliate_Hotproducts_Download_Params {
   /** API signature */
   app_signature?: string;
@@ -413,13 +435,13 @@ export interface Affiliate_Hotproducts_Download_Params {
   /** Respond parameter list. eg: commission_rate,sale_price */
   fields?: string;
   /** Local site：global, it_site, es_site, ru_site */
-  locale_site?: string;
+  locale_site?: AE_Locale_Site;
   page_no?: number;
   page_size?: number;
   /** Target Currency:USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW,ILS,THB,CLP,VND */
-  target_currency?: string;
+  target_currency?: AE_Currency;
   /** Target Language:EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN */
-  target_language?: string;
+  target_language?: AE_Language;
   /** Your trackingID */
   tracking_id?: string;
   /**  The Ship to country. Filter products that can be sent to that country; Returns the price according to the country’s tax rate policy.*/
@@ -432,7 +454,7 @@ export interface Affiliate_Hotproducts_Download {
   products: Affiliate_Base_Product_Details[];
 }
 
-export interface Affiliate_Hotproducts_Download_Result {
+export interface Affiliate_Hotproducts_Download_Response {
   resp_result: {
     result: Affiliate_Hotproducts_Download;
     resp_code?: number;
@@ -440,10 +462,15 @@ export interface Affiliate_Hotproducts_Download_Result {
   };
 }
 
+export interface Affiliate_Hotproducts_Download_Result {
+  aliexpress_affiliate_hotproduct_download_response: Affiliate_Hotproducts_Download_Response;
+}
+
 /**
  * AFFILIATE API
  * SMART MATCH PRODUCTS
  */
+
 export interface Affiliate_Smart_Match_Products_Params {
   /** App information */
   app?: string;
@@ -464,9 +491,9 @@ export interface Affiliate_Smart_Match_Products_Params {
   /** site information */
   site?: string;
   /** Target Currency: USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW,ILS,THB,CLP,VND */
-  target_currency?: string;
+  target_currency?: AE_Currency;
   /** Target Languages: EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN */
-  target_language?: string;
+  target_language?: AE_Language;
   tracking_id?: string;
   /** user id */
   user?: string;
@@ -474,5 +501,6 @@ export interface Affiliate_Smart_Match_Products_Params {
   country?: string;
 }
 
-export interface Affiliate_Smart_Match_Products_Result
-  extends Affiliate_Hotproducts_Download_Result {}
+export interface Affiliate_Smart_Match_Products_Result {
+  aliexpress_affiliate_product_smartmatch_response: Affiliate_Hotproducts_Download_Response;
+}

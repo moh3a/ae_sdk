@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.0
+
+### Minor Changes
+
+- Fix affiliate API return types
+
 ## 0.3.4
 
 ### Patch Changes

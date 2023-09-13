@@ -95,4 +95,22 @@ export class AEBaseClient implements AE_Base_Client {
       AliexpressMethod<K>["result"]
     >(parameters);
   }
+
+  async callAPIDirectly(
+    method: string,
+    params: Record<string, string | number | boolean>,
+  ): Result<any> {
+    const parameters: any = {
+      ...params,
+      method: method as any,
+      session: this.session,
+      app_key: this.app_key,
+      simplify: true,
+      sign_method: this.sign_method,
+      timestamp: Date.now(),
+    };
+    parameters.sign = this.sign(parameters);
+
+    return await this.call<any, any>(parameters);
+  }
 }

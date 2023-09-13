@@ -1,7 +1,17 @@
-import { Affiliate_Categories_Params } from ".";
+import {
+  Affiliate_Categories_Params,
+  AE_Currency,
+  AE_Language,
+  AE_Platform_Type,
+  AE_Order_Status,
+  AE_Logistics_Status,
+  YES_NO,
+  AE_Sort_Filter,
+  AE_Sort_Promo_Filter,
+} from ".";
 /**
  *
- * PRODUCT API
+ * DROPSHIPPER API
  * RECOMMENDED PRODUCTS
  *
  */
@@ -17,37 +27,27 @@ import { Affiliate_Categories_Params } from ".";
  * @param {String} target_currency target currency:USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW
  * @param {String} country screens the subject product library for the target country
  */
-export interface DS_ProductAPI_Recommended_Products_Params {
+export interface DS_Recommended_Products_Params {
   country?: string;
   /**
    * @description target currency:USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY,
    */
-  target_currency?: string;
+  target_currency?: AE_Currency;
   /**
    * @description target language:EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN
    */
-  target_language?: string;
+  target_language?: AE_Language;
   /**
    * @description record count of each page, 1 - 50
    */
   page_size?: string;
   page_no?: string;
-  sort?:
-    | "priceAsc"
-    | "priceDesc"
-    | "volumeAsc"
-    | "volumeDesc"
-    | "discountAsc"
-    | "discountDesc"
-    | "DSRratingAsc"
-    | "DSRratingDesc";
+  sort?: AE_Sort_Promo_Filter;
   category_id?: string;
   feed_name: string;
 }
 
-export type AE_Platform_Type = "TMALL" | "ALL" | "PLAZA";
-
-export interface DS_ProductAPI_Recommended_Product {
+export interface DS_Recommended_Product {
   lastest_volume: number;
   seller_id: number;
   target_sale_price: string;
@@ -59,7 +59,7 @@ export interface DS_ProductAPI_Recommended_Product {
   product_video_url: string;
   product_id: number;
   sale_price: string;
-  target_sale_price_currency: string;
+  target_sale_price_currency: AE_Currency;
   second_level_category_id: number;
   shop_url: string;
   product_detail_url: string;
@@ -67,26 +67,26 @@ export interface DS_ProductAPI_Recommended_Product {
   first_level_category_name: string;
   product_main_image_url: string;
   platform_product_type: AE_Platform_Type;
-  target_original_price_currency: string;
+  target_original_price_currency: AE_Currency;
   ship_to_days: string;
-  sale_price_currency: string;
+  sale_price_currency: AE_Currency;
   original_price: string;
-  original_price_currency: string;
+  original_price_currency: AE_Currency;
   discount: string;
 }
 
-export interface DS_ProductAPI_Recommended_Products {
+export interface DS_Recommended_Products {
   total_record_count: number;
   current_record_count: number;
   is_finished: boolean;
   total_page_no: number;
   current_page_no: number;
-  products: DS_ProductAPI_Recommended_Product[];
+  products: DS_Recommended_Product[];
 }
 
-export interface DS_ProductAPI_Recommended_Products_Result {
+export interface DS_Recommended_Products_Result {
   aliexpress_ds_recommend_feed_get_response: {
-    result: DS_ProductAPI_Recommended_Products;
+    result: DS_Recommended_Products;
     rsp_msg?: string;
     rsp_code: string;
   };
@@ -126,17 +126,13 @@ export interface DS_Feedname_Result {
 
 export interface DS_Image_Search_Params {
   /** @description EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IW,IN */
-  target_language?: string;
+  target_language?: AE_Language;
   /** @description USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW */
-  target_currency?: string;
+  target_currency?: AE_Currency;
   /** @description count of products， max 150. */
   product_cnt?: number;
   /** @description SALE_PRICE_ASC, SALE_PRICE_DESC, LAST_VOLUME_ASC, LAST_VOLUME_DESC */
-  sort?:
-    | "SALE_PRICE_ASC"
-    | "SALE_PRICE_DESC"
-    | "LAST_VOLUME_ASC"
-    | "LAST_VOLUME_DESC";
+  sort?: AE_Sort_Filter;
   /** @description Ship to Country */
   shpt_to?: string;
   /** @description image name in fileserver，max size 100 KB */
@@ -144,7 +140,7 @@ export interface DS_Image_Search_Params {
 }
 
 export interface DS_Image_Search {
-  products: DS_ProductAPI_Recommended_Product[];
+  products: DS_Recommended_Product[];
   total_record_count: number;
 }
 
@@ -158,21 +154,22 @@ export interface DS_Image_Search_Result {
 }
 
 /**
- * PRODUCT API
+ * DROPSHIPPER API
  * DROPSHIPPER PRODUCT DETAILS
  */
-export interface DS_ProductAPI_Product_Params {
+
+export interface DS_Product_Params {
   product_id: number;
   ship_to_country?: string;
-  target_currency?: string;
-  target_language?: string;
+  target_currency?: AE_Currency;
+  target_language?: AE_Language;
 }
 
-export interface DS_ProductAPI_Product_Base_Info {
+export interface DS_Product_Base_Info {
   product_id: number;
   category_id: number;
   subject: string;
-  currency_code: string;
+  currency_code: AE_Currency;
   product_status_type: string;
   ws_display: string;
   ws_offline_date: string;
@@ -185,12 +182,12 @@ export interface DS_ProductAPI_Product_Base_Info {
   mobile_detail: string;
 }
 
-export interface DS_ProductAPI_Product_Shipping_Info {
+export interface DS_Product_Shipping_Info {
   delivery_time: number;
   ship_to_country: string;
 }
 
-export interface DS_ProductAPI_Product_Package_Info {
+export interface DS_Product_Package_Info {
   package_type: boolean;
   package_length: number;
   package_height: number;
@@ -200,7 +197,7 @@ export interface DS_ProductAPI_Product_Package_Info {
   product_unit?: number;
 }
 
-export interface DS_ProductAPI_Product_Store_Info {
+export interface DS_Product_Store_Info {
   store_id: number;
   store_name: string;
   item_as_described_rating: string;
@@ -208,12 +205,12 @@ export interface DS_ProductAPI_Product_Store_Info {
   shipping_speed_rating: string;
 }
 
-export interface DS_ProductAPI_Product_Id_Converter {
+export interface DS_Product_Id_Converter {
   main_product_id: number;
   sub_product_id: string;
 }
 
-export interface DS_ProductAPI_Product_Multimedia_Videos {
+export interface DS_Product_Multimedia_Videos {
   ali_member_id: number;
   media_id: number;
   media_status: string;
@@ -221,38 +218,38 @@ export interface DS_ProductAPI_Product_Multimedia_Videos {
   poster_url: string;
 }
 
-export interface DS_ProductAPI_Product_Multimedia {
-  ae_video_dtos: DS_ProductAPI_Product_Multimedia_Videos[];
+export interface DS_Product_Multimedia {
+  ae_video_dtos: DS_Product_Multimedia_Videos[];
   image_urls: string;
 }
 
-export interface DS_ProductAPI_Product {
-  ae_item_base_info_dto: DS_ProductAPI_Product_Base_Info;
-  ae_item_sku_info_dtos: DS_ProductAPI_Product_SKU_Variation[];
-  ae_multimedia_info_dto: DS_ProductAPI_Product_Multimedia;
-  package_info_dto: DS_ProductAPI_Product_Package_Info;
-  logistics_info_dto: DS_ProductAPI_Product_Shipping_Info;
-  ae_item_properties: DS_ProductAPI_Product_Attributes[];
-  ae_store_info: DS_ProductAPI_Product_Store_Info;
-  product_id_converter_result: DS_ProductAPI_Product_Id_Converter;
+export interface DS_Product {
+  ae_item_base_info_dto: DS_Product_Base_Info;
+  ae_item_sku_info_dtos: DS_Product_SKU_Variation[];
+  ae_multimedia_info_dto: DS_Product_Multimedia;
+  package_info_dto: DS_Product_Package_Info;
+  logistics_info_dto: DS_Product_Shipping_Info;
+  ae_item_properties: DS_Product_Attributes[];
+  ae_store_info: DS_Product_Store_Info;
+  product_id_converter_result: DS_Product_Id_Converter;
 }
 
-export interface DS_ProductAPI_Product_Result {
+export interface DS_Product_Result {
   aliexpress_ds_product_get_response: {
-    result: DS_ProductAPI_Product;
+    result: DS_Product;
     rsp_msg: string;
     rsp_code: string;
   };
 }
 
-export interface DS_ProductAPI_Product_SKU_Variation {
+export interface DS_Product_SKU_Variation {
   sku_stock: boolean;
   sku_price: string;
   sku_code: string;
   ipm_sku_stock: number;
   id: string;
-  currency_code: string;
-  aeop_s_k_u_propertys: DS_ProductAPI_Product_SKU_Properties[];
+  currency_code: AE_Currency;
+  aeop_s_k_u_propertys: DS_Product_SKU_Properties[];
   barcode: string;
   offer_sale_price: string;
   offer_bulk_sale_price: string;
@@ -261,7 +258,7 @@ export interface DS_ProductAPI_Product_SKU_Variation {
   s_k_u_available_stock?: number;
 }
 
-export interface DS_ProductAPI_Product_SKU_Properties {
+export interface DS_Product_SKU_Properties {
   sku_property_id: number;
   sku_property_value: string;
   sku_property_name: string;
@@ -271,7 +268,7 @@ export interface DS_ProductAPI_Product_SKU_Properties {
   sku_image?: string;
 }
 
-export interface DS_ProductAPI_Product_Attributes {
+export interface DS_Product_Attributes {
   attr_name_id: number;
   attr_name: string;
   attr_value_id: number;
@@ -293,7 +290,7 @@ export interface DS_ProductAPI_Product_Attributes {
  * @link https://developers.aliexpress.com/en/doc.htm?docId=35446&docType=2
  *
  */
-export interface DS_OrderAPI_Place_Order_Params {
+export interface DS_Place_Order_Params {
   /**
    * logistics_address
    * @description Logistics address information
@@ -340,7 +337,7 @@ export interface AE_Logistics_Address {
   zip?: string;
 }
 
-export interface DS_OrderAPI_Place_Order_Result {
+export interface DS_Place_Order_Result {
   aliexpress_trade_buy_placeorder_response: {
     result: {
       error_code: string;
@@ -358,54 +355,46 @@ export interface DS_OrderAPI_Place_Order_Result {
  *
  */
 
-export interface DS_OrderAPI_Get_Order_Params {
+export interface DS_Get_Order_Params {
   order_id: number;
 }
 
-export interface DS_OrderAPI_Price {
+export interface DS_Price {
   amount: string;
-  currency_code: string;
+  currency_code: AE_Currency;
 }
 
-export interface DS_OrderAPI_Product_Info {
+export interface DS_Product_Info {
   product_id: number;
-  product_price: DS_OrderAPI_Price;
+  product_price: DS_Price;
   product_name: string;
   product_count: number;
 }
 
-export interface DS_OrderAPI_Logistics_Info {
+export interface DS_Logistics_Info {
   logistics_no: string;
   logistics_service: string;
 }
 
-export interface DS_OrderAPI_Store_Info {
+export interface DS_Store_Info {
   store_id: number;
   store_name: string;
   store_url: string;
 }
 
-export interface DS_OrderAPI_Get_Order {
+export interface DS_Get_Order {
   gmt_create: string;
-  order_status:
-    | "PLACE_ORDER_SUCCESS"
-    | "WAIT_BUYER_ACCEPT_GOODS"
-    | "FUND_PROCESSING"
-    | "FINISH";
-  logistics_status:
-    | "NO_LOGISTICS"
-    | "WAIT_SELLER_SEND_GOODS"
-    | "SELLER_SEND_GOODS"
-    | "BUYER_ACCEPT_GOODS";
-  order_amount: DS_OrderAPI_Price;
-  child_order_list: DS_OrderAPI_Product_Info[];
-  logistics_info_list: DS_OrderAPI_Logistics_Info[];
-  store_info: DS_OrderAPI_Store_Info;
+  order_status: AE_Order_Status;
+  logistics_status: AE_Logistics_Status;
+  order_amount: DS_Price;
+  child_order_list: DS_Product_Info[];
+  logistics_info_list: DS_Logistics_Info[];
+  store_info: DS_Store_Info;
 }
 
-export interface DS_OrderAPI_Get_Order_Result {
+export interface DS_Get_Order_Result {
   aliexpress_trade_ds_order_get_response: {
-    result: DS_OrderAPI_Get_Order;
+    result: DS_Get_Order;
     rsp_msg: string;
     rsp_code: string;
   };
@@ -415,6 +404,7 @@ export interface DS_OrderAPI_Get_Order_Result {
  * DROPSHIPPER API - ORDER
  * ORDER QUERY BY INDEX
  */
+
 export interface DS_Orders_ByIdx_Params {
   /** End time, PST time */
   end_time: string;
@@ -433,25 +423,25 @@ export interface DS_Orders_ByIdx_Order_Details {
   estimated_finished_commission: string;
   estimated_paid_commission: number;
   order_number: number;
-  is_hot_product: "Y" | "N";
+  is_hot_product: YES_NO;
   parent_order_number: number;
-  publisher_settled_currency: string;
+  publisher_settled_currency: AE_Currency;
   category_id: number;
   item_title: string;
   item_detail_url: string;
   item_main_image_url: string;
-  item_count: "100";
+  item_count: number;
   created_time: string;
   finished_time: string;
   item_id: number;
   paid_time: string;
-  is_new_buyer: "Y" | "N";
+  is_new_buyer: YES_NO;
   ship_to_country: string;
   sub_order_id: number;
   effect_status: string;
   incentive_commission_rate: string;
   estimated_incentive_paid_commission: string;
-  is_affiliate_product: "Y" | "N";
+  is_affiliate_product: YES_NO;
   paid_amount: number;
   effect_detail_status: string;
   estimated_incentive_finished_commission: string;
@@ -480,6 +470,7 @@ export interface DS_Orders_ByIdx_Result {
  * DROPSHIPPING API
  * ORDER SUBMIT
  */
+
 export interface DS_Order_Submit_Params {
   /** AE product ID */
   ae_product_id: string;
@@ -509,6 +500,7 @@ export interface DS_Order_Submit_Result {
  * DROPSHIPPING API
  * ADD DROPSHIPPING INFO
  */
+
 export interface DS_Add_Info_Arguments {
   /** Extended Information */
   extend_info?: Record<string, string | number | boolean>;
@@ -536,7 +528,7 @@ export interface DS_Add_Info_Result {
  * SHIPPING INFO
  *
  */
-export interface DS_ShippingAPI_Shipping_Info_Arguments {
+export interface DS_Shipping_Info_Arguments {
   sku_id?: string;
   city_code?: string;
   country_code: string;
@@ -545,10 +537,10 @@ export interface DS_ShippingAPI_Shipping_Info_Arguments {
   province_code?: string;
   send_goods_country_code: string;
   price?: string;
-  price_currency?: string;
+  price_currency?: AE_Currency;
 }
 
-export interface DS_ShippingAPI_Shipping_Info_Params {
+export interface DS_Shipping_Info_Params {
   /**
    * Get the support logistics info of a product, provide for dropshipping develeopers.
    *
@@ -566,32 +558,32 @@ export interface DS_ShippingAPI_Shipping_Info_Params {
   param_aeop_freight_calculate_for_buyer_d_t_o: string;
 }
 
-export interface DS_ShippingAPI_Freight_Info {
+export interface DS_Freight_Info {
   amount: number;
   cent: number;
-  currency_code: string;
+  currency_code: AE_Currency;
 }
 
-export interface DS_ShippingAPI_Shipping_Details {
+export interface DS_Shipping_Details {
   error_code: number;
   estimated_delivery_time: string;
-  freight: DS_ShippingAPI_Freight_Info;
+  freight: DS_Freight_Info;
   service_name: string;
 }
 
-export type DS_ShippingAPI_Shipping_Info_Response =
+export type DS_Shipping_Info_Response =
   | {
       success: true;
-      aeop_freight_calculate_result_for_buyer_d_t_o_list: DS_ShippingAPI_Shipping_Details[];
+      aeop_freight_calculate_result_for_buyer_d_t_o_list: DS_Shipping_Details[];
     }
   | {
       success: false;
       error_desc: string;
     };
 
-export interface DS_ShippingAPI_Shipping_Info_Result {
+export interface DS_Shipping_Info_Result {
   aliexpress_logistics_buyer_freight_calculate_response: {
-    result: DS_ShippingAPI_Shipping_Info_Response;
+    result: DS_Shipping_Info_Response;
   };
 }
 
@@ -611,7 +603,7 @@ export interface DS_ShippingAPI_Shipping_Info_Result {
  * @param {String} service_name Logistics service KEY
  * @param {String} to_area Countries for receiving goods, DZ
  */
-export interface DS_ShippingAPI_Tracking_Info_Params {
+export interface DS_Tracking_Info_Params {
   logistics_no: string;
   origin: string;
   out_ref: string;
@@ -619,7 +611,7 @@ export interface DS_ShippingAPI_Tracking_Info_Params {
   to_area: string;
 }
 
-export interface DS_ShippingAPI_Tracking_Event {
+export interface DS_Tracking_Event {
   event_desc: string;
   signed_name: string;
   status: string;
@@ -627,10 +619,10 @@ export interface DS_ShippingAPI_Tracking_Event {
   event_date: string;
 }
 
-export type DS_ShippingAPI_Tracking_Info_Response =
+export type DS_Tracking_Info_Response =
   | {
       result_success: true;
-      details: DS_ShippingAPI_Tracking_Event[];
+      details: DS_Tracking_Event[];
       official_website: string;
     }
   | {
@@ -638,6 +630,6 @@ export type DS_ShippingAPI_Tracking_Info_Response =
       error_desc: string;
     };
 
-export interface DS_ShippingAPI_Tracking_Info_Result {
-  aliexpress_logistics_ds_trackinginfo_query_response: DS_ShippingAPI_Tracking_Info_Response;
+export interface DS_Tracking_Info_Result {
+  aliexpress_logistics_ds_trackinginfo_query_response: DS_Tracking_Info_Response;
 }

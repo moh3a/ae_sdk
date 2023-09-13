@@ -37,22 +37,22 @@ import {
   DS_Feedname_Result,
   DS_Image_Search_Params,
   DS_Image_Search_Result,
-  DS_OrderAPI_Get_Order_Params,
-  DS_OrderAPI_Get_Order_Result,
-  DS_OrderAPI_Place_Order_Params,
-  DS_OrderAPI_Place_Order_Result,
+  DS_Get_Order_Params,
+  DS_Get_Order_Result,
+  DS_Place_Order_Params,
+  DS_Place_Order_Result,
   DS_Order_Submit_Params,
   DS_Order_Submit_Result,
   DS_Orders_ByIdx_Params,
   DS_Orders_ByIdx_Result,
-  DS_ProductAPI_Product_Params,
-  DS_ProductAPI_Product_Result,
-  DS_ProductAPI_Recommended_Products_Params,
-  DS_ProductAPI_Recommended_Products_Result,
-  DS_ShippingAPI_Shipping_Info_Params,
-  DS_ShippingAPI_Shipping_Info_Result,
-  DS_ShippingAPI_Tracking_Info_Params,
-  DS_ShippingAPI_Tracking_Info_Result,
+  DS_Product_Params,
+  DS_Product_Result,
+  DS_Recommended_Products_Params,
+  DS_Recommended_Products_Result,
+  DS_Shipping_Info_Params,
+  DS_Shipping_Info_Result,
+  DS_Tracking_Info_Params,
+  DS_Tracking_Info_Result,
 } from ".";
 
 export type AE_API_NAMES =
@@ -171,14 +171,14 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
     : T extends "aliexpress.logistics.buyer.freight.calculate"
     ? {
         method: T;
-        params: DS_ShippingAPI_Shipping_Info_Params;
-        result: DS_ShippingAPI_Shipping_Info_Result;
+        params: DS_Shipping_Info_Params;
+        result: DS_Shipping_Info_Result;
       }
     : T extends "aliexpress.logistics.ds.trackinginfo.query"
     ? {
         method: T;
-        params: DS_ShippingAPI_Tracking_Info_Params;
-        result: DS_ShippingAPI_Tracking_Info_Result;
+        params: DS_Tracking_Info_Params;
+        result: DS_Tracking_Info_Result;
       }
     : T extends "aliexpress.ds.add.info"
     ? { method: T; params: DS_Add_Info_Params; result: DS_Add_Info_Result }
@@ -191,20 +191,20 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
     : T extends "aliexpress.ds.recommend.feed.get"
     ? {
         method: T;
-        params: DS_ProductAPI_Recommended_Products_Params;
-        result: DS_ProductAPI_Recommended_Products_Result;
+        params: DS_Recommended_Products_Params;
+        result: DS_Recommended_Products_Result;
       }
     : T extends "aliexpress.trade.buy.placeorder"
     ? {
         method: T;
-        params: DS_OrderAPI_Place_Order_Params;
-        result: DS_OrderAPI_Place_Order_Result;
+        params: DS_Place_Order_Params;
+        result: DS_Place_Order_Result;
       }
     : T extends "aliexpress.ds.trade.order.get"
     ? {
         method: T;
-        params: DS_OrderAPI_Get_Order_Params;
-        result: DS_OrderAPI_Get_Order_Result;
+        params: DS_Get_Order_Params;
+        result: DS_Get_Order_Result;
       }
     : T extends "aliexpress.ds.feedname.get"
     ? { method: T; params: DS_Feedname_Params; result: DS_Feedname_Result }
@@ -229,8 +229,8 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
     : T extends "aliexpress.ds.product.get"
     ? {
         method: T;
-        params: DS_ProductAPI_Product_Params;
-        result: DS_ProductAPI_Product_Result;
+        params: DS_Product_Params;
+        result: DS_Product_Result;
       }
     : T extends "aliexpress.affiliate.link.generate"
     ? {
@@ -309,3 +309,82 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
         params: Record<string, string | number | boolean>;
         result: unknown;
       };
+
+export type AE_Platform_Type = "TMALL" | "ALL" | "PLAZA";
+
+export type AE_Language =
+  | "EN"
+  | "RU"
+  | "PT"
+  | "ES"
+  | "FR"
+  | "ID"
+  | "IT"
+  | "TH"
+  | "JA"
+  | "AR"
+  | "VI"
+  | "TR"
+  | "DE"
+  | "HE"
+  | "KO"
+  | "NL"
+  | "PL"
+  | "MX"
+  | "CL"
+  | "IW"
+  | "IN";
+
+export type AE_Currency =
+  | "USD"
+  | "GBP"
+  | "CAD"
+  | "EUR"
+  | "CNY"
+  | "UAH"
+  | "MXN"
+  | "TRY"
+  | "RUB"
+  | "BRL"
+  | "AUD"
+  | "INR"
+  | "JPY"
+  | "IDR"
+  | "SEK"
+  | "KRW";
+
+export type AE_Locale_Site = "global" | "it_site" | "es_site" | "ru_site";
+
+export type AE_Sort_Filter =
+  | "SALE_PRICE_ASC"
+  | "SALE_PRICE_DESC"
+  | "LAST_VOLUME_ASC"
+  | "LAST_VOLUME_DESC";
+
+export type AE_Sort_Promo_Filter =
+  | "commissionAsc"
+  | "commissionDesc"
+  | "priceAsc"
+  | "priceDesc"
+  | "volumeAsc"
+  | "volumeDesc"
+  | "discountAsc"
+  | "discountDesc"
+  | "ratingAsc"
+  | "ratingDesc"
+  | "promotionTimeAsc"
+  | "promotionTimeDesc";
+
+export type AE_Order_Status =
+  | "PLACE_ORDER_SUCCESS"
+  | "WAIT_BUYER_ACCEPT_GOODS"
+  | "FUND_PROCESSING"
+  | "FINISH";
+
+export type AE_Logistics_Status =
+  | "NO_LOGISTICS"
+  | "WAIT_SELLER_SEND_GOODS"
+  | "SELLER_SEND_GOODS"
+  | "BUYER_ACCEPT_GOODS";
+
+export type YES_NO = "Y" | "N";
