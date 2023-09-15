@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.2
+
+### Patch Changes
+
+- Export some relevant types #2
+
 ## 0.4.1
 
 ### Patch Changes
