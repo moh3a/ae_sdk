@@ -126,6 +126,8 @@ export class DropshipperClient extends AESystemClient {
     if (response.ok) {
       // Fix weird AE API responses into a predefind struct
       if (
+        response.data.aliexpress_ds_product_get_response.result
+          .ae_item_properties &&
         (
           response.data.aliexpress_ds_product_get_response.result
             .ae_item_properties as any
@@ -138,6 +140,8 @@ export class DropshipperClient extends AESystemClient {
           ).ae_item_property;
 
       if (
+        response.data.aliexpress_ds_product_get_response.result
+          .ae_item_sku_info_dtos &&
         (
           response.data.aliexpress_ds_product_get_response.result
             .ae_item_sku_info_dtos as any
@@ -155,7 +159,10 @@ export class DropshipperClient extends AESystemClient {
             sku.aeop_s_k_u_propertys = (sku as any).ae_sku_property_dtos;
             delete (sku as any).ae_sku_property_dtos;
           }
-          if ((sku.aeop_s_k_u_propertys[0] as any).ae_sku_property_d_t_o) {
+          if (
+            sku.aeop_s_k_u_propertys[0] &&
+            (sku.aeop_s_k_u_propertys[0] as any).ae_sku_property_d_t_o
+          ) {
             sku.aeop_s_k_u_propertys.forEach((prop) => {
               prop = (prop as any).ae_sku_property_d_t_o;
             });
@@ -164,6 +171,8 @@ export class DropshipperClient extends AESystemClient {
       );
 
       if (
+        response.data.aliexpress_ds_product_get_response.result
+          .ae_multimedia_info_dto.ae_video_dtos &&
         (
           response.data.aliexpress_ds_product_get_response.result
             .ae_multimedia_info_dto.ae_video_dtos as any
