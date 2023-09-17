@@ -122,6 +122,59 @@ export class DropshipperClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.recommend.feed.get&methodType=GET/POST
    */
   async productDetails(args: DS_Product_Params) {
-    return await this.execute("aliexpress.ds.product.get", args);
+    let response = await this.execute("aliexpress.ds.product.get", args);
+    if (response.ok) {
+      // Fix weird AE API responses into a predefind struct
+      if (
+        (
+          response.data.aliexpress_ds_product_get_response.result
+            .ae_item_properties as any
+        ).ae_item_property
+      )
+        response.data.aliexpress_ds_product_get_response.result.ae_item_properties =
+          (
+            response.data.aliexpress_ds_product_get_response.result
+              .ae_item_properties as any
+          ).ae_item_property;
+
+      if (
+        (
+          response.data.aliexpress_ds_product_get_response.result
+            .ae_item_sku_info_dtos as any
+        ).ae_item_sku_info_d_t_o
+      )
+        response.data.aliexpress_ds_product_get_response.result.ae_item_sku_info_dtos =
+          (
+            response.data.aliexpress_ds_product_get_response.result
+              .ae_item_sku_info_dtos as any
+          ).ae_item_sku_info_d_t_o;
+
+      response.data.aliexpress_ds_product_get_response.result.ae_item_sku_info_dtos.forEach(
+        (sku) => {
+          if ((sku as any).ae_sku_property_dtos) {
+            sku.aeop_s_k_u_propertys = (sku as any).ae_sku_property_dtos;
+            delete (sku as any).ae_sku_property_dtos;
+          }
+          if ((sku.aeop_s_k_u_propertys[0] as any).ae_sku_property_d_t_o) {
+            sku.aeop_s_k_u_propertys.forEach((prop) => {
+              prop = (prop as any).ae_sku_property_d_t_o;
+            });
+          }
+        },
+      );
+
+      if (
+        (
+          response.data.aliexpress_ds_product_get_response.result
+            .ae_multimedia_info_dto.ae_video_dtos as any
+        ).ae_video_d_t_o
+      )
+        response.data.aliexpress_ds_product_get_response.result.ae_multimedia_info_dto.ae_video_dtos =
+          (
+            response.data.aliexpress_ds_product_get_response.result
+              .ae_multimedia_info_dto.ae_video_dtos as any
+          ).ae_video_d_t_o;
+    }
+    return response;
   }
 }

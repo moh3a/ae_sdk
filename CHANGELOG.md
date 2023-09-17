@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.3
+
+### Patch Changes
+
+- Add newly registered APIs support
+
 ## 0.4.2
 
 ### Patch Changes

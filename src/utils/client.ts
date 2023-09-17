@@ -16,13 +16,16 @@ export class AEBaseClient implements AE_Base_Client {
   readonly url: string;
   readonly format: AE_Response_Format;
 
+  readonly migrated_apis_url = "https://api-sg.aliexpress.com/sync";
+  readonly new_apis_url = "https://api-sg.aliexpress.com/rest";
+
   protected readonly sign_method = "sha256";
 
   constructor(init: AE_Base_Client) {
     this.app_key = init.app_key;
     this.app_secret = init.app_secret;
     this.session = init.session;
-    this.url = init.url ?? "https://api-sg.aliexpress.com/sync";
+    this.url = init.url ?? this.migrated_apis_url;
     this.format = init.format ?? "json";
   }
 
@@ -41,21 +44,23 @@ export class AEBaseClient implements AE_Base_Client {
 
   protected async call<T extends PublicParams, K>(params: T): Result<K> {
     try {
-      let basestring = this.url;
-      let sorted = Object.keys(params).sort();
+      const p = JSON.parse(JSON.stringify(params));
+      let basestring = "";
+      if (p.method.includes("/")) {
+        basestring = this.new_apis_url + p.method;
+        delete p.method;
+      } else basestring = this.migrated_apis_url;
+      let sorted = Object.keys(p).sort();
 
       for (let i = 0; i < sorted.length; i++) {
         let symbol = i === 0 ? "?" : "&";
-        if (params[sorted[i] as keyof typeof params])
+        if (p[sorted[i] as keyof typeof p])
           basestring +=
             symbol +
             sorted[i] +
             "=" +
             encodeURIComponent(
-              params[sorted[i] as keyof typeof params] as
-                | number
-                | string
-                | boolean,
+              p[sorted[i] as keyof typeof p] as number | string | boolean,
             );
       }
       const res = await fetch(basestring, { method: "POST" });

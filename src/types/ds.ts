@@ -223,25 +223,6 @@ export interface DS_Product_Multimedia {
   image_urls: string;
 }
 
-export interface DS_Product {
-  ae_item_base_info_dto: DS_Product_Base_Info;
-  ae_item_sku_info_dtos: DS_Product_SKU_Variation[];
-  ae_multimedia_info_dto: DS_Product_Multimedia;
-  package_info_dto: DS_Product_Package_Info;
-  logistics_info_dto: DS_Product_Shipping_Info;
-  ae_item_properties: DS_Product_Attributes[];
-  ae_store_info: DS_Product_Store_Info;
-  product_id_converter_result: DS_Product_Id_Converter;
-}
-
-export interface DS_Product_Result {
-  aliexpress_ds_product_get_response: {
-    result: DS_Product;
-    rsp_msg: string;
-    rsp_code: string;
-  };
-}
-
 export interface DS_Product_SKU_Variation {
   sku_stock: boolean;
   sku_price: string;
@@ -276,6 +257,25 @@ export interface DS_Product_Attributes {
   attr_value_unit?: string;
   attr_value_start?: string;
   attr_value_end?: string;
+}
+
+export interface DS_Product {
+  ae_item_sku_info_dtos: DS_Product_SKU_Variation[];
+  ae_item_properties: DS_Product_Attributes[];
+  ae_item_base_info_dto: DS_Product_Base_Info;
+  ae_multimedia_info_dto: DS_Product_Multimedia;
+  package_info_dto: DS_Product_Package_Info;
+  logistics_info_dto: DS_Product_Shipping_Info;
+  ae_store_info: DS_Product_Store_Info;
+  product_id_converter_result: DS_Product_Id_Converter;
+}
+
+export interface DS_Product_Result {
+  aliexpress_ds_product_get_response: {
+    result: DS_Product;
+    rsp_msg: string;
+    rsp_code: string;
+  };
 }
 
 /**
