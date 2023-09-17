@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.5
+
+### Patch Changes
+
+- Fix accessing product details response #2
+
 ## 0.4.4
 
 ### Patch Changes

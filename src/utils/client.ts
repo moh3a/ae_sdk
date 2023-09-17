@@ -116,6 +116,6 @@ export class AEBaseClient implements AE_Base_Client {
     };
     parameters.sign = this.sign(parameters);
 
-    return await this.call<any, any>(parameters);
+    return await this.call<any, unknown>(parameters);
   }
 }

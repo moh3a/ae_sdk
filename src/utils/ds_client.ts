@@ -160,12 +160,12 @@ export class DropshipperClient extends AESystemClient {
             delete (sku as any).ae_sku_property_dtos;
           }
           if (
-            sku.aeop_s_k_u_propertys[0] &&
-            (sku.aeop_s_k_u_propertys[0] as any).ae_sku_property_d_t_o
+            sku.aeop_s_k_u_propertys &&
+            (sku.aeop_s_k_u_propertys as any).ae_sku_property_d_t_o
           ) {
-            sku.aeop_s_k_u_propertys.forEach((prop) => {
-              prop = (prop as any).ae_sku_property_d_t_o;
-            });
+            sku.aeop_s_k_u_propertys = (
+              sku.aeop_s_k_u_propertys as any
+            ).ae_sku_property_d_t_o;
           }
         },
       );
