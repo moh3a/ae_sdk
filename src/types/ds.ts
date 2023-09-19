@@ -295,14 +295,26 @@ export interface DS_Place_Order_Params {
    * logistics_address
    * @description Logistics address information
    * @param {String} address Address information
+   * @param {String} address2 Address extension information
    * @param {String} city
    * @param {String} contact_person 	Contact
    * @param {String} country
+   * @param {String} cpf taxpayer identification number
    * @param {String} full_name Receiver's full name
+   * @param {String} locale internationalization locale
    * @param {String} mobile_no telephone number
+   * @param {String} passport_no passport number
+   * @param {String} passport_no_date passport expiry date
+   * @param {String} passport_organization passport issuing agency
    * @param {String} phone_country Country code where the phone is located
    * @param {String} province
+   * @param {String} tax_number
    * @param {String} zip 	Postal code
+   * @param {String} foreigner_passport_no foreign tax number (registration card number or passport number is required for Korean foreigners)
+   * @param {String} is_foreigner whether it is a foreigner
+   * @param {String} vat_no vat tax number
+   * @param {String} tax_company company name
+   * @param {String} location_tree_address_idlocation tree address id
    *
    * product_items
    * @description Product attribute
@@ -327,24 +339,53 @@ export interface AE_Product_Item {
 
 export interface AE_Logistics_Address {
   address: string;
+  address2?: string;
   city?: string;
   contact_person?: string;
   country?: string;
+  cpf?: string;
   full_name?: string;
+  locale?: string;
   mobile_no?: string;
+  passport_no?: string;
+  passport_no_date?: string;
+  passport_organization?: string;
   phone_country?: string;
   province?: string;
   zip?: string;
+  tax_number?: string;
+  foreigner_passport_no?: string;
+  is_foreigner?: string;
+  vat_no?: string;
+  tax_company?: string;
+  location_tree_address_idlocation?: string;
 }
+
+export type DS_Place_Order_Error_Message =
+  | "B_DROPSHIPPER_DELIVERY_ADDRESS_VALIDATE_FAIL"
+  | "BLACKLIST_BUYER_IN_LIST"
+  | "USER_ACCOUNT_DISABLED"
+  | "PRICE_PAY_CURRENCY_ERROR"
+  | "DELIVERY_METHOD_NOT_EXIST"
+  | "INVENTORY_HOLD_ERROR"
+  | "REPEATED_ORDER_ERROR"
+  | "ERROR_WHEN_BUILD_FOR_PLACE_ORDER"
+  | "A001_ORDER_CANNOT_BE_PLACED"
+  | "A002_INVALID_ZONE"
+  | "A003_SUSPICIOUS_BUYER"
+  | "A004_CANNOT_USER_COUPON"
+  | "A005_INVALID_COUNTRIES"
+  | "A006_INVALID_ACCOUNT_INFO";
 
 export interface DS_Place_Order_Result {
   aliexpress_trade_buy_placeorder_response: {
-    result: {
-      error_code: string;
-      error_msg: string;
-      order_list: number[];
-      is_success: boolean;
-    };
+    result:
+      | {
+          error_code: DS_Place_Order_Error_Message;
+          error_msg?: string;
+          is_success: false;
+        }
+      | { order_list: number[]; is_success: true };
   };
 }
 

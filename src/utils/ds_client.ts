@@ -31,20 +31,22 @@ export class DropshipperClient extends AESystemClient {
       },
     );
 
-    if (
-      response.ok &&
-      response.data.aliexpress_logistics_buyer_freight_calculate_response.result
-        .success &&
-      (
-        response.data.aliexpress_logistics_buyer_freight_calculate_response
-          .result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any
-      ).aeop_freight_calculate_result_for_buyer_dto
-    )
-      response.data.aliexpress_logistics_buyer_freight_calculate_response.result.aeop_freight_calculate_result_for_buyer_d_t_o_list =
-        (
-          response.data.aliexpress_logistics_buyer_freight_calculate_response
-            .result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any
+    if (response.ok) {
+      const data =
+        response.data.aliexpress_logistics_buyer_freight_calculate_response;
+      if (
+        data.result.success &&
+        (data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any)
+          .aeop_freight_calculate_result_for_buyer_dto
+      ) {
+        data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list = (
+          data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any
         ).aeop_freight_calculate_result_for_buyer_dto;
+        delete (
+          data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any
+        ).aeop_freight_calculate_result_for_buyer_dto;
+      }
+    }
 
     return response;
   }
@@ -53,10 +55,23 @@ export class DropshipperClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.logistics.ds.trackinginfo.query&methodType=GET/POST
    */
   async trackingInfo(args: DS_Tracking_Info_Params) {
-    return await this.execute(
+    let response = await this.execute(
       "aliexpress.logistics.ds.trackinginfo.query",
       args,
     );
+
+    if (
+      response.ok &&
+      response.data.aliexpress_logistics_ds_trackinginfo_query_response
+        .result_success
+    ) {
+      const data =
+        response.data.aliexpress_logistics_ds_trackinginfo_query_response;
+      if ((data.details as any).details)
+        data.details = (data.details as any).details;
+    }
+
+    return response;
   }
 
   /**
@@ -104,7 +119,32 @@ export class DropshipperClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.trade.ds.order.get&methodType=GET/POST
    */
   async orderDetails(args: DS_Get_Order_Params) {
-    return await this.execute("aliexpress.ds.trade.order.get", args);
+    let response = await this.execute("aliexpress.ds.trade.order.get", args);
+
+    if (response.ok) {
+      if ((response.data as any).aliexpress_ds_trade_order_get_response) {
+        response.data.aliexpress_trade_ds_order_get_response = (
+          response.data as any
+        ).aliexpress_ds_trade_order_get_response;
+        delete (response.data as any).aliexpress_ds_trade_order_get_response;
+      }
+
+      let data = response.data.aliexpress_trade_ds_order_get_response.result;
+
+      if ((data.child_order_list as any).ae_child_order_info) {
+        data.child_order_list = (
+          data.child_order_list as any
+        ).ae_child_order_info;
+      }
+
+      if ((data.logistics_info_list as any).ae_order_logistics_info) {
+        data.logistics_info_list = (
+          data.logistics_info_list as any
+        ).ae_order_logistics_info;
+      }
+    }
+
+    return response;
   }
 
   /**
@@ -144,65 +184,46 @@ export class DropshipperClient extends AESystemClient {
   async productDetails(args: DS_Product_Params) {
     let response = await this.execute("aliexpress.ds.product.get", args);
     if (response.ok) {
+      const data = response.data.aliexpress_ds_product_get_response.result;
       // Fix weird AE API responses into a predefind struct
       if (
-        response.data.aliexpress_ds_product_get_response.result
-          .ae_item_properties &&
-        (
-          response.data.aliexpress_ds_product_get_response.result
-            .ae_item_properties as any
-        ).ae_item_property
+        data.ae_item_properties &&
+        (data.ae_item_properties as any).ae_item_property
       )
-        response.data.aliexpress_ds_product_get_response.result.ae_item_properties =
-          (
-            response.data.aliexpress_ds_product_get_response.result
-              .ae_item_properties as any
-          ).ae_item_property;
+        data.ae_item_properties = (
+          data.ae_item_properties as any
+        ).ae_item_property;
 
       if (
-        response.data.aliexpress_ds_product_get_response.result
-          .ae_item_sku_info_dtos &&
-        (
-          response.data.aliexpress_ds_product_get_response.result
-            .ae_item_sku_info_dtos as any
-        ).ae_item_sku_info_d_t_o
+        data.ae_item_sku_info_dtos &&
+        (data.ae_item_sku_info_dtos as any).ae_item_sku_info_d_t_o
       )
-        response.data.aliexpress_ds_product_get_response.result.ae_item_sku_info_dtos =
-          (
-            response.data.aliexpress_ds_product_get_response.result
-              .ae_item_sku_info_dtos as any
-          ).ae_item_sku_info_d_t_o;
+        data.ae_item_sku_info_dtos = (
+          data.ae_item_sku_info_dtos as any
+        ).ae_item_sku_info_d_t_o;
 
-      response.data.aliexpress_ds_product_get_response.result.ae_item_sku_info_dtos.forEach(
-        (sku) => {
-          if ((sku as any).ae_sku_property_dtos) {
-            sku.aeop_s_k_u_propertys = (sku as any).ae_sku_property_dtos;
-            delete (sku as any).ae_sku_property_dtos;
-          }
-          if (
-            sku.aeop_s_k_u_propertys &&
-            (sku.aeop_s_k_u_propertys as any).ae_sku_property_d_t_o
-          ) {
-            sku.aeop_s_k_u_propertys = (
-              sku.aeop_s_k_u_propertys as any
-            ).ae_sku_property_d_t_o;
-          }
-        },
-      );
+      data.ae_item_sku_info_dtos.forEach((sku) => {
+        if ((sku as any).ae_sku_property_dtos) {
+          sku.aeop_s_k_u_propertys = (sku as any).ae_sku_property_dtos;
+          delete (sku as any).ae_sku_property_dtos;
+        }
+        if (
+          sku.aeop_s_k_u_propertys &&
+          (sku.aeop_s_k_u_propertys as any).ae_sku_property_d_t_o
+        ) {
+          sku.aeop_s_k_u_propertys = (
+            sku.aeop_s_k_u_propertys as any
+          ).ae_sku_property_d_t_o;
+        }
+      });
 
       if (
-        response.data.aliexpress_ds_product_get_response.result
-          .ae_multimedia_info_dto.ae_video_dtos &&
-        (
-          response.data.aliexpress_ds_product_get_response.result
-            .ae_multimedia_info_dto.ae_video_dtos as any
-        ).ae_video_d_t_o
+        data.ae_multimedia_info_dto.ae_video_dtos &&
+        (data.ae_multimedia_info_dto.ae_video_dtos as any).ae_video_d_t_o
       )
-        response.data.aliexpress_ds_product_get_response.result.ae_multimedia_info_dto.ae_video_dtos =
-          (
-            response.data.aliexpress_ds_product_get_response.result
-              .ae_multimedia_info_dto.ae_video_dtos as any
-          ).ae_video_d_t_o;
+        data.ae_multimedia_info_dto.ae_video_dtos = (
+          data.ae_multimedia_info_dto.ae_video_dtos as any
+        ).ae_video_d_t_o;
     }
     return response;
   }
