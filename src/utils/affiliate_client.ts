@@ -1,3 +1,4 @@
+import { parse_affiliate_products } from ".";
 import {
   AE_Base_Client,
   Affiliate_Products_Params,
@@ -36,7 +37,25 @@ export class AffiliateClient extends AESystemClient {
    *
    */
   async getCategories(args: Affiliate_Categories_Params) {
-    return await this.execute("aliexpress.affiliate.category.get", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.category.get",
+      args,
+    );
+
+    if (
+      response.ok &&
+      (
+        response.data.aliexpress_affiliate_category_get_response.resp_result
+          .result.categories as any
+      ).category
+    )
+      response.data.aliexpress_affiliate_category_get_response.resp_result.result.categories =
+        (
+          response.data.aliexpress_affiliate_category_get_response.resp_result
+            .result.categories as any
+        ).category;
+
+    return response;
   }
 
   /**
@@ -75,7 +94,19 @@ export class AffiliateClient extends AESystemClient {
    *
    */
   async getHotProducts(args: Affiliate_Products_Params) {
-    return await this.execute("aliexpress.affiliate.hotproduct.query", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.hotproduct.query",
+      args,
+    );
+
+    if (response.ok) {
+      response.data.aliexpress_affiliate_hotproduct_query_response =
+        parse_affiliate_products(
+          response.data.aliexpress_affiliate_hotproduct_query_response,
+        );
+    }
+
+    return response;
   }
 
   /**
@@ -112,7 +143,19 @@ export class AffiliateClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.product.query&methodType=GET/POST
    */
   async queryProducts(args: Affiliate_Products_Params) {
-    return await this.execute("aliexpress.affiliate.product.query", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.product.query",
+      args,
+    );
+
+    if (response.ok) {
+      response.data.aliexpress_affiliate_product_query_response =
+        parse_affiliate_products(
+          response.data.aliexpress_affiliate_product_query_response,
+        );
+    }
+
+    return response;
   }
 
   /**
