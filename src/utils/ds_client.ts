@@ -107,12 +107,25 @@ export class DropshipperClient extends AESystemClient {
     logistics_address: AE_Logistics_Address;
     product_items: AE_Product_Item[];
   }) {
-    return await this.execute("aliexpress.trade.buy.placeorder", {
+    let response = await this.execute("aliexpress.trade.buy.placeorder", {
       param_place_order_request4_open_api_d_t_o: JSON.stringify({
         logistics_address,
         product_items,
       }),
     });
+
+    if (
+      response.ok &&
+      response.data.aliexpress_trade_buy_placeorder_response.result.is_success
+    ) {
+      response.data.aliexpress_trade_buy_placeorder_response.result.order_list =
+        (
+          response.data.aliexpress_trade_buy_placeorder_response.result
+            .order_list as any
+        ).number;
+    }
+
+    return response;
   }
 
   /**
