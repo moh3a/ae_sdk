@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.9
+
+### Patch Changes
+
+- Ensure API returns predefined types #4
+
 ## 0.4.8
 
 ### Patch Changes

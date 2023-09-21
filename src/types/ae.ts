@@ -53,6 +53,7 @@ import {
   DS_Shipping_Info_Result,
   DS_Tracking_Info_Params,
   DS_Tracking_Info_Result,
+  DS_Categories_Result,
 } from ".";
 
 export type AE_API_NAMES =
@@ -212,7 +213,7 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
     ? {
         method: T;
         params: Affiliate_Categories_Params;
-        result: Affiliate_Categories_Result;
+        result: DS_Categories_Result;
       }
     : T extends "aliexpress.ds.commissionorder.listbyindex"
     ? {

@@ -8,6 +8,7 @@ import {
   YES_NO,
   AE_Sort_Filter,
   AE_Sort_Promo_Filter,
+  Affiliate_Categories,
 } from ".";
 /**
  *
@@ -673,4 +674,18 @@ export type DS_Tracking_Info_Response =
 
 export interface DS_Tracking_Info_Result {
   aliexpress_logistics_ds_trackinginfo_query_response: DS_Tracking_Info_Response;
+}
+
+/**
+ * DROPSHIPPER API
+ * CATEGORIES
+ */
+export interface DS_Categories_Result {
+  aliexpress_ds_category_get_response: {
+    resp_result: {
+      resp_code: number;
+      resp_msg: string;
+      result: Affiliate_Categories;
+    };
+  };
 }

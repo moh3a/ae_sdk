@@ -42,9 +42,6 @@ export class DropshipperClient extends AESystemClient {
         data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list = (
           data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any
         ).aeop_freight_calculate_result_for_buyer_dto;
-        delete (
-          data.result.aeop_freight_calculate_result_for_buyer_d_t_o_list as any
-        ).aeop_freight_calculate_result_for_buyer_dto;
       }
     }
 
@@ -144,13 +141,19 @@ export class DropshipperClient extends AESystemClient {
 
       let data = response.data.aliexpress_trade_ds_order_get_response.result;
 
-      if ((data.child_order_list as any).ae_child_order_info) {
+      if (
+        data.child_order_list &&
+        (data.child_order_list as any).ae_child_order_info
+      ) {
         data.child_order_list = (
           data.child_order_list as any
         ).ae_child_order_info;
       }
 
-      if ((data.logistics_info_list as any).ae_order_logistics_info) {
+      if (
+        data.logistics_info_list &&
+        (data.logistics_info_list as any).ae_order_logistics_info
+      ) {
         data.logistics_info_list = (
           data.logistics_info_list as any
         ).ae_order_logistics_info;
@@ -171,7 +174,22 @@ export class DropshipperClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.category.get&methodType=GET/POST
    */
   async getCategories(args: Affiliate_Categories_Params) {
-    return await this.execute("aliexpress.ds.category.get", args);
+    let response = await this.execute("aliexpress.ds.category.get", args);
+
+    if (
+      response.ok &&
+      (
+        response.data.aliexpress_ds_category_get_response.resp_result.result
+          .categories as any
+      ).category
+    )
+      response.data.aliexpress_ds_category_get_response.resp_result.result.categories =
+        (
+          response.data.aliexpress_ds_category_get_response.resp_result.result
+            .categories as any
+        ).category;
+
+    return response;
   }
 
   /**
