@@ -28,7 +28,19 @@ export class AffiliateClient extends AESystemClient {
   async generateAffiliateLinks(
     args: Affiliate_Generate_Affiliate_Links_Params,
   ) {
-    return await this.execute("aliexpress.affiliate.link.generate", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.link.generate",
+      args,
+    );
+    if (response.ok) {
+      let data =
+        response.data.aliexpress_affiliate_link_generate_response.resp_result
+          .result.promotion_links;
+      if ((data as any).promotion_link) {
+        data = (data as any).promotion_link;
+      }
+    }
+    return response;
   }
 
   /**
@@ -41,20 +53,14 @@ export class AffiliateClient extends AESystemClient {
       "aliexpress.affiliate.category.get",
       args,
     );
-
-    if (
-      response.ok &&
-      (
+    if (response.ok) {
+      let data =
         response.data.aliexpress_affiliate_category_get_response.resp_result
-          .result.categories as any
-      ).category
-    )
-      response.data.aliexpress_affiliate_category_get_response.resp_result.result.categories =
-        (
-          response.data.aliexpress_affiliate_category_get_response.resp_result
-            .result.categories as any
-        ).category;
-
+          .result.categories;
+      if ((data as any).category) {
+        data = (data as any).category;
+      }
+    }
     return response;
   }
 
@@ -64,7 +70,19 @@ export class AffiliateClient extends AESystemClient {
    *
    */
   async featuredPromoInfo(args: Affiliate_Featuredpromo_Info_Params) {
-    return await this.execute("aliexpress.affiliate.featuredpromo.get", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.featuredpromo.get",
+      args,
+    );
+    if (response.ok) {
+      let data =
+        response.data.aliexpress_affiliate_featuredpromo_get_response.result
+          .promos;
+      if ((data as any).promo) {
+        data = (data as any).promo;
+      }
+    }
+    return response;
   }
 
   /**
@@ -73,10 +91,16 @@ export class AffiliateClient extends AESystemClient {
    *
    */
   async featuredPromoProducts(args: Affiliate_Featured_Promo_Products_Params) {
-    return await this.execute(
+    let response = await this.execute(
       "aliexpress.affiliate.featuredpromo.products.get",
       args,
     );
+    if (response.ok) {
+      let data =
+        response.data.aliexpress_affiliate_featuredpromo_products_get_response;
+      data = parse_affiliate_products(data);
+    }
+    return response;
   }
 
   /**
@@ -85,7 +109,16 @@ export class AffiliateClient extends AESystemClient {
    *
    */
   async getHotProductsDownload(args: Affiliate_Hotproducts_Download_Params) {
-    return await this.execute("aliexpress.affiliate.hotproduct.download", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.hotproduct.download",
+      args,
+    );
+    if (response.ok) {
+      let data =
+        response.data.aliexpress_affiliate_hotproduct_download_response;
+      data = parse_affiliate_products(data);
+    }
+    return response;
   }
 
   /**
@@ -98,14 +131,10 @@ export class AffiliateClient extends AESystemClient {
       "aliexpress.affiliate.hotproduct.query",
       args,
     );
-
     if (response.ok) {
-      response.data.aliexpress_affiliate_hotproduct_query_response =
-        parse_affiliate_products(
-          response.data.aliexpress_affiliate_hotproduct_query_response,
-        );
+      let data = response.data.aliexpress_affiliate_hotproduct_query_response;
+      data = parse_affiliate_products(data);
     }
-
     return response;
   }
 
@@ -136,7 +165,15 @@ export class AffiliateClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.productdetail.get&methodType=GET/POST
    */
   async productDetails(args: Affiliate_Product_Details_Params) {
-    return await this.execute("aliexpress.affiliate.productdetail.get", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.productdetail.get",
+      args,
+    );
+    if (response.ok) {
+      let data = response.data.aliexpress_affiliate_productdetail_get_response;
+      data = parse_affiliate_products(data);
+    }
+    return response;
   }
 
   /**
@@ -147,14 +184,10 @@ export class AffiliateClient extends AESystemClient {
       "aliexpress.affiliate.product.query",
       args,
     );
-
     if (response.ok) {
-      response.data.aliexpress_affiliate_product_query_response =
-        parse_affiliate_products(
-          response.data.aliexpress_affiliate_product_query_response,
-        );
+      let data = response.data.aliexpress_affiliate_product_query_response;
+      data = parse_affiliate_products(data);
     }
-
     return response;
   }
 
@@ -162,6 +195,14 @@ export class AffiliateClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21407&path=aliexpress.affiliate.product.smartmatch&methodType=GET/POST
    */
   async smartMatchProducts(args: Affiliate_Smart_Match_Products_Params) {
-    return await this.execute("aliexpress.affiliate.product.smartmatch", args);
+    let response = await this.execute(
+      "aliexpress.affiliate.product.smartmatch",
+      args,
+    );
+    if (response.ok) {
+      let data = response.data.aliexpress_affiliate_product_smartmatch_response;
+      data = parse_affiliate_products(data);
+    }
+    return response;
   }
 }
