@@ -2,31 +2,22 @@ import {
   Affiliate_Categories_Params,
   AE_Currency,
   AE_Language,
-  AE_Platform_Type,
   AE_Order_Status,
   AE_Logistics_Status,
   YES_NO,
   AE_Sort_Filter,
   AE_Sort_Promo_Filter,
   Affiliate_Categories,
+  Affiliate_Base_Products_Cursor_Response,
+  Affiliate_Base_Products_Cursor,
+  Affiliate_Featuredpromo_Info_Response,
 } from ".";
+
 /**
  *
  * DROPSHIPPER API
  * RECOMMENDED PRODUCTS
  *
- */
-
-/**
- * Parameters to get the recommended products information feed
- * @param {String} feed_name
- * @param {String} category_id Category ID, you can get category ID via "get category" API https://developers.aliexpress.com/en/doc.htm?docId=45801&docType=2
- * @param {Number} page_no Page number
- * @param {String} sort sort by：priceAsc，priceDesc，volumeAsc、volumeDesc, discountAsc, discountDesc, DSRratingAsc，DSRratingDesc,
- * @param {Number} page_size record count of each page, 1 - 50
- * @param {String} target_language target language:EN,RU,PT,ES,FR,ID,IT,TH,JA,AR,VI,TR,DE,HE,KO,NL,PL,MX,CL,IN
- * @param {String} target_currency target currency:USD, GBP, CAD, EUR, UAH, MXN, TRY, RUB, BRL, AUD, INR, JPY, IDR, SEK,KRW
- * @param {String} country screens the subject product library for the target country
  */
 export interface DS_Recommended_Products_Params {
   country?: string;
@@ -48,49 +39,8 @@ export interface DS_Recommended_Products_Params {
   feed_name: string;
 }
 
-export interface DS_Recommended_Product {
-  lastest_volume: number;
-  seller_id: number;
-  target_sale_price: string;
-  evaluate_rate: string;
-  target_original_price: string;
-  shop_id: number;
-  second_level_category_name: string;
-  first_level_category_id: number;
-  product_video_url: string;
-  product_id: number;
-  sale_price: string;
-  target_sale_price_currency: AE_Currency;
-  second_level_category_id: number;
-  shop_url: string;
-  product_detail_url: string;
-  product_title: string;
-  first_level_category_name: string;
-  product_main_image_url: string;
-  platform_product_type: AE_Platform_Type;
-  target_original_price_currency: AE_Currency;
-  ship_to_days: string;
-  sale_price_currency: AE_Currency;
-  original_price: string;
-  original_price_currency: AE_Currency;
-  discount: string;
-}
-
-export interface DS_Recommended_Products {
-  total_record_count: number;
-  current_record_count: number;
-  is_finished: boolean;
-  total_page_no: number;
-  current_page_no: number;
-  products: DS_Recommended_Product[];
-}
-
 export interface DS_Recommended_Products_Result {
-  aliexpress_ds_recommend_feed_get_response: {
-    result: DS_Recommended_Products;
-    rsp_msg?: string;
-    rsp_code: string;
-  };
+  aliexpress_ds_recommend_feed_get_response: Affiliate_Base_Products_Cursor_Response;
 }
 
 /**
@@ -99,25 +49,8 @@ export interface DS_Recommended_Products_Result {
  */
 export interface DS_Feedname_Params extends Affiliate_Categories_Params {}
 
-export interface DS_Feedname_Promo_Details {
-  promo_name: string;
-  promo_desc: string;
-  product_num: number;
-}
-
-export interface DS_Feedname {
-  current_record_count: number;
-  promos: DS_Feedname_Promo_Details[];
-}
-
 export interface DS_Feedname_Result {
-  aliexpress_ds_feedname_get_response: {
-    resp_result: {
-      result: DS_Feedname;
-      resp_code: number;
-      resp_msg: string;
-    };
-  };
+  aliexpress_ds_feedname_get_response: Affiliate_Featuredpromo_Info_Response;
 }
 
 /**
@@ -140,17 +73,11 @@ export interface DS_Image_Search_Params {
   image_file_bytes: Uint8Array;
 }
 
-export interface DS_Image_Search {
-  products: DS_Recommended_Product[];
-  total_record_count: number;
-}
-
 export interface DS_Image_Search_Result {
   aliexpress_ds_image_search_response: {
-    data: DS_Image_Search;
+    data: Affiliate_Base_Products_Cursor;
     rsp_code: string;
     rsp_msg: string;
-    total_record_count: number;
   };
 }
 

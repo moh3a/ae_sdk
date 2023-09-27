@@ -1,3 +1,4 @@
+import { parse_affiliate_products } from ".";
 import {
   AE_Base_Client,
   AE_Logistics_Address,
@@ -84,14 +85,27 @@ export class DropshipperClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.image.search&methodType=GET/POST
    */
   // async searchByImage(args: DS_Image_Search_Params) {
-  //   return await this.execute("aliexpress.ds.image.search", args);
+  //   let response = await this.execute("aliexpress.ds.image.search", args);
+  //   if (response.ok) {
+  //     let data =
+  //       response.data.aliexpress_ds_image_search_response.data.products;
+  //     data = parse_affiliate_products(data);
+  //   }
+  //   return response;
   // }
 
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.recommend.feed.get&methodType=GET/POST
    */
   async queryfeaturedPromoProducts(args: DS_Recommended_Products_Params) {
-    return await this.execute("aliexpress.ds.recommend.feed.get", args);
+    let response = await this.execute("aliexpress.ds.recommend.feed.get", args);
+    if (response.ok) {
+      let data =
+        response.data.aliexpress_ds_recommend_feed_get_response.resp_result
+          .result.products;
+      data = parse_affiliate_products(data);
+    }
+    return response;
   }
 
   /**
@@ -167,7 +181,15 @@ export class DropshipperClient extends AESystemClient {
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.feedname.get&methodType=GET/POST
    */
   async queryFeaturedPromos(args: DS_Feedname_Params) {
-    return await this.execute("aliexpress.ds.feedname.get", args);
+    let response = await this.execute("aliexpress.ds.feedname.get", args);
+    if (response.ok) {
+      let data =
+        response.data.aliexpress_ds_feedname_get_response.result.promos;
+      if ((data as any).promo) {
+        data = (data as any).promo;
+      }
+    }
+    return response;
   }
 
   /**
@@ -175,20 +197,12 @@ export class DropshipperClient extends AESystemClient {
    */
   async getCategories(args: Affiliate_Categories_Params) {
     let response = await this.execute("aliexpress.ds.category.get", args);
-
-    if (
-      response.ok &&
-      (
+    if (response.ok) {
+      let data =
         response.data.aliexpress_ds_category_get_response.resp_result.result
-          .categories as any
-      ).category
-    )
-      response.data.aliexpress_ds_category_get_response.resp_result.result.categories =
-        (
-          response.data.aliexpress_ds_category_get_response.resp_result.result
-            .categories as any
-        ).category;
-
+          .categories;
+      if ((data as any).category) data = (data as any).category;
+    }
     return response;
   }
 

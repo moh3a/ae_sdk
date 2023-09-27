@@ -1,5 +1,12 @@
 # ae_sdk
 
+## 0.4.11
+
+### Patch Changes
+
+- Fix API sign method bug to support the [new AE API signing format](https://openservice.aliexpress.com/doc/doc.htm?nodeId=27493&docId=118729#/?docId=1386)
+- Ensure API returns predefined types for AE dropshipping API
+
 ## 0.4.10
 
 ### Patch Changes

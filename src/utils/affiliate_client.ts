@@ -97,7 +97,8 @@ export class AffiliateClient extends AESystemClient {
     );
     if (response.ok) {
       let data =
-        response.data.aliexpress_affiliate_featuredpromo_products_get_response;
+        response.data.aliexpress_affiliate_featuredpromo_products_get_response
+          .resp_result.result.products;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -115,7 +116,8 @@ export class AffiliateClient extends AESystemClient {
     );
     if (response.ok) {
       let data =
-        response.data.aliexpress_affiliate_hotproduct_download_response;
+        response.data.aliexpress_affiliate_hotproduct_download_response
+          .resp_result.result.products;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -132,7 +134,9 @@ export class AffiliateClient extends AESystemClient {
       args,
     );
     if (response.ok) {
-      let data = response.data.aliexpress_affiliate_hotproduct_query_response;
+      let data =
+        response.data.aliexpress_affiliate_hotproduct_query_response.resp_result
+          .result.products;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -170,7 +174,9 @@ export class AffiliateClient extends AESystemClient {
       args,
     );
     if (response.ok) {
-      let data = response.data.aliexpress_affiliate_productdetail_get_response;
+      let data =
+        response.data.aliexpress_affiliate_productdetail_get_response
+          .resp_result.result.products;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -185,7 +191,9 @@ export class AffiliateClient extends AESystemClient {
       args,
     );
     if (response.ok) {
-      let data = response.data.aliexpress_affiliate_product_query_response;
+      let data =
+        response.data.aliexpress_affiliate_product_query_response.resp_result
+          .result.products;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -200,7 +208,9 @@ export class AffiliateClient extends AESystemClient {
       args,
     );
     if (response.ok) {
-      let data = response.data.aliexpress_affiliate_product_smartmatch_response;
+      let data =
+        response.data.aliexpress_affiliate_product_smartmatch_response
+          .resp_result.result.products;
       data = parse_affiliate_products(data);
     }
     return response;

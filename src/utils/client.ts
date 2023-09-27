@@ -30,12 +30,18 @@ export class AEBaseClient implements AE_Base_Client {
   }
 
   protected sign(params: any): string {
+    const p = JSON.parse(JSON.stringify(params));
     let basestring = "";
-    let sorted = Object.keys(params).sort();
-
-    for (let i = 0; i < sorted.length; i++) {
-      basestring += sorted[i] + params[sorted[i] as keyof typeof params];
+    if (p.method.includes("/")) {
+      basestring = p.method;
+      delete p.method;
     }
+
+    basestring += Object.keys(p)
+      .sort()
+      .map((key) => key + p[key as keyof typeof p])
+      .join("");
+
     return createHmac("sha256", this.app_secret, { encoding: "utf-8" })
       .update(basestring)
       .digest("hex")

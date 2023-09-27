@@ -1,15 +1,12 @@
-import { Affiliate_Base_Products_Cursor_Response } from "../types";
+import { Affiliate_Base_Product_Details } from "../types";
 
-export const parse_affiliate_products = <
-  T extends Partial<Affiliate_Base_Products_Cursor_Response>,
->(
-  input: T,
+export const parse_affiliate_products = (
+  input?: Affiliate_Base_Product_Details[],
 ) => {
-  let data = input.resp_result?.result.products;
-  if (data && (data as any).product) data = (data as any).product;
+  if (input && (input as any).product) input = (input as any).product;
 
-  if ((data && (data[0]?.product_small_image_urls as any)).string) {
-    data = data?.map((product) => {
+  if ((input && (input[0]?.product_small_image_urls as any)).string) {
+    input = input?.map((product) => {
       product.product_small_image_urls = (
         product.product_small_image_urls as any
       ).string;

@@ -71,8 +71,8 @@ export interface Affiliate_Base_Product_Details {
 }
 
 export interface Affiliate_Base_Products_Cursor {
-  products: Affiliate_Base_Product_Details[];
-  current_record_count: number;
+  products?: Affiliate_Base_Product_Details[];
+  current_record_count?: number;
   current_page_no?: number;
   total_page_no?: number;
   total_record_count?: number;
@@ -316,12 +316,14 @@ export interface Affiliate_Featuredpromo_Info {
   promos: Affiliate_Featuredpromo_Details;
 }
 
+export interface Affiliate_Featuredpromo_Info_Response {
+  resp_code?: number;
+  resp_msg?: string;
+  result: Affiliate_Featuredpromo_Info;
+}
+
 export interface Affiliate_Featuredpromo_Info_Result {
-  aliexpress_affiliate_featuredpromo_get_response: {
-    resp_code: number;
-    resp_msg: string;
-    result: Affiliate_Featuredpromo_Info;
-  };
+  aliexpress_affiliate_featuredpromo_get_response: Affiliate_Featuredpromo_Info_Response;
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "ae_sdk",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "A simple SDK for Aliexpress (dropshipping and affiliate) APIs.",
   "private": false,
   "main": "./dist/index.js",
