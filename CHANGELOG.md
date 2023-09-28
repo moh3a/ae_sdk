@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.12
+
+### Patch Changes
+
+- - Ensure API returns predefined types for AE affiliate API.
+
 ## 0.4.11
 
 ### Patch Changes

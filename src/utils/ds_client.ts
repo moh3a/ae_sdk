@@ -102,7 +102,7 @@ export class DropshipperClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_ds_recommend_feed_get_response.resp_result
-          .result.products;
+          .result;
       data = parse_affiliate_products(data);
     }
     return response;

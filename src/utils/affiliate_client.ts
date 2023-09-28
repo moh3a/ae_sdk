@@ -98,7 +98,7 @@ export class AffiliateClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_affiliate_featuredpromo_products_get_response
-          .resp_result.result.products;
+          .resp_result.result;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -117,7 +117,7 @@ export class AffiliateClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_affiliate_hotproduct_download_response
-          .resp_result.result.products;
+          .resp_result.result;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -136,7 +136,7 @@ export class AffiliateClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_affiliate_hotproduct_query_response.resp_result
-          .result.products;
+          .result;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -176,7 +176,7 @@ export class AffiliateClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_affiliate_productdetail_get_response
-          .resp_result.result.products;
+          .resp_result.result;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -193,7 +193,7 @@ export class AffiliateClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_affiliate_product_query_response.resp_result
-          .result.products;
+          .result;
       data = parse_affiliate_products(data);
     }
     return response;
@@ -210,7 +210,7 @@ export class AffiliateClient extends AESystemClient {
     if (response.ok) {
       let data =
         response.data.aliexpress_affiliate_product_smartmatch_response
-          .resp_result.result.products;
+          .resp_result.result;
       data = parse_affiliate_products(data);
     }
     return response;
