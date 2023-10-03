@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.4.13
+
+### Patch Changes
+
+- Add shipping details parameter (tracking_available)
+
 ## 0.4.12
 
 ### Patch Changes

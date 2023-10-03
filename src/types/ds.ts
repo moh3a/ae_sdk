@@ -538,6 +538,7 @@ export interface DS_Shipping_Details {
   estimated_delivery_time: string;
   freight: DS_Freight_Info;
   service_name: string;
+  tracking_available: "true" | "false";
 }
 
 export type DS_Shipping_Info_Response =
