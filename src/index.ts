@@ -1,6 +1,6 @@
 export * from "./utils/affiliate_client";
 export * from "./utils/ds_client";
-export {
+export type {
   Result,
   AE_Currency,
   AE_Language,

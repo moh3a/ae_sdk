@@ -1,4 +1,4 @@
-import {
+import type {
   Affiliate_Categories_Params,
   AE_Currency,
   AE_Language,
@@ -70,7 +70,7 @@ export interface DS_Image_Search_Params {
   /** @description Ship to Country */
   shpt_to?: string;
   /** @description image name in fileserver，max size 100 KB */
-  image_file_bytes: Uint8Array;
+  image_file_bytes: string;
 }
 
 export interface DS_Image_Search_Result {

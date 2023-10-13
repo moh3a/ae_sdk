@@ -1,5 +1,18 @@
 # ae_sdk
 
+## 0.4.14
+
+### Patch Changes
+
+- ## Documentation
+
+  - Write a simple documentation for basic usage
+
+  ## Other
+
+  - Refactor some code for aesthtics
+  - Add initial unit tests
+
 ## 0.4.13
 
 ### Patch Changes

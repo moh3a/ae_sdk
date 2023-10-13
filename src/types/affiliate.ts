@@ -1,4 +1,4 @@
-import {
+import type {
   AE_Currency,
   AE_Language,
   AE_Locale_Site,

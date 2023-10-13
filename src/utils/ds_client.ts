@@ -1,5 +1,5 @@
 import { parse_affiliate_products } from ".";
-import {
+import type {
   AE_Base_Client,
   AE_Logistics_Address,
   AE_Product_Item,
@@ -84,11 +84,11 @@ export class DropshipperClient extends AESystemClient {
   /**
    * @link https://open.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.ds.image.search&methodType=GET/POST
    */
+  // todo
   // async searchByImage(args: DS_Image_Search_Params) {
   //   let response = await this.execute("aliexpress.ds.image.search", args);
   //   if (response.ok) {
-  //     let data =
-  //       response.data.aliexpress_ds_image_search_response.data.products;
+  //     let data = response.data.aliexpress_ds_image_search_response.data;
   //     data = parse_affiliate_products(data);
   //   }
   //   return response;
@@ -100,10 +100,11 @@ export class DropshipperClient extends AESystemClient {
   async queryfeaturedPromoProducts(args: DS_Recommended_Products_Params) {
     let response = await this.execute("aliexpress.ds.recommend.feed.get", args);
     if (response.ok) {
-      let data =
-        response.data.aliexpress_ds_recommend_feed_get_response.resp_result
-          .result;
-      data = parse_affiliate_products(data);
+      response.data.aliexpress_ds_recommend_feed_get_response.resp_result.result =
+        parse_affiliate_products(
+          response.data.aliexpress_ds_recommend_feed_get_response.resp_result
+            .result,
+        );
     }
     return response;
   }

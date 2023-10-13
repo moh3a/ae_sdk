@@ -1,5 +1,5 @@
 import { parse_affiliate_products } from ".";
-import {
+import type {
   AE_Base_Client,
   Affiliate_Products_Params,
   Affiliate_Featured_Promo_Products_Params,

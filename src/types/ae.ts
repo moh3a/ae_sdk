@@ -1,4 +1,4 @@
-import {
+import type {
   AES_Generate_Security_Token_Params,
   AES_Generate_Security_Token_Result,
   AES_Generate_Token_Params,
@@ -102,8 +102,6 @@ export type SYSTEM_API_NAMES =
  * @param {String | undefined} app_key Indicates the AppKey allocated by the TOP to an application. An ISV can choose Open Platform Console > Application Management > Overview to check the AppKey and AppSecret of the formal environment.
  * @param {String} session Indicates the authorization granted by the TOP to an application after a user logs in and grants authorization successfully.
  * @param {String} timestamp Indicates the time stamp in the format of yyyy-MM-dd HH:mm:ss and in the time zone of GMT+8. For example, 2016-01-01 12:00:00. The Taobao API server allows a maximum time error of 10 minutes for a request from a client.
- * @param {String} format Indicates the response format. The default value is xml. The value can be set to xml or json.
- * @param {String} v Indicates the API protocol version. The value can be set to 2.0.
  * @param {Boolean} simplify Indicates whether the simplified JSON return format is used. This parameter is valid only if format is set to json. The default value is false.
  * @param {String} sign_method Indicates the signature digest algorithm. The value can be set to hmac or md5.
  * @param {String} sign Indicates the obtained signature of API input parameters.
@@ -134,15 +132,7 @@ export interface AE_Base_Client {
    * @link https://open.aliexpress.com/doc/doc.htm?nodeId=27493&docId=118729#/?docId=730
    */
   session: string;
-  url?: string;
-  /**
-   * @param {String} format Indicates the response format. The default value is xml. The value can be set to xml or json.
-   * @default json
-   */
-  format?: AE_Response_Format;
 }
-
-export type AE_Response_Format = "xml" | "json";
 
 export type AliexpressMethod<T extends AE_API_NAMES> =
   T extends "/auth/token/security/create"

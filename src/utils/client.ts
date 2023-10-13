@@ -1,32 +1,35 @@
 import { createHmac } from "crypto";
 
-import {
+import type {
   AE_API_NAMES,
   AE_Base_Client,
-  AE_Response_Format,
   PublicParams,
   AliexpressMethod,
   Result,
 } from "../types";
+import {
+  AE_OP_API_URL,
+  AE_TOP_API_URL,
+  API_RESPONSE_MESSAGE,
+  RESPONSE_FORMAT,
+  SIGN_METHOD,
+  SIGN_METHOD_ENCODING,
+} from "../constants";
 
 export class AEBaseClient implements AE_Base_Client {
   readonly app_key: string;
   readonly app_secret: string;
   readonly session: string;
-  readonly url: string;
-  readonly format: AE_Response_Format;
 
-  readonly migrated_apis_url = "https://api-sg.aliexpress.com/sync";
-  readonly new_apis_url = "https://api-sg.aliexpress.com/rest";
-
-  protected readonly sign_method = "sha256";
+  protected readonly format = RESPONSE_FORMAT;
+  protected readonly migrated_apis_url = AE_TOP_API_URL;
+  protected readonly new_apis_url = AE_OP_API_URL;
+  protected readonly sign_method = SIGN_METHOD;
 
   constructor(init: AE_Base_Client) {
     this.app_key = init.app_key;
     this.app_secret = init.app_secret;
     this.session = init.session;
-    this.url = init.url ?? this.migrated_apis_url;
-    this.format = init.format ?? "json";
   }
 
   protected sign(params: any): string {
@@ -42,7 +45,9 @@ export class AEBaseClient implements AE_Base_Client {
       .map((key) => key + p[key as keyof typeof p])
       .join("");
 
-    return createHmac("sha256", this.app_secret, { encoding: "utf-8" })
+    return createHmac(SIGN_METHOD, this.app_secret, {
+      encoding: SIGN_METHOD_ENCODING,
+    })
       .update(basestring)
       .digest("hex")
       .toUpperCase();
@@ -74,14 +79,14 @@ export class AEBaseClient implements AE_Base_Client {
       if (data.error_response || !res.ok)
         return {
           ok: false,
-          message: "Bad request.",
+          message: API_RESPONSE_MESSAGE.BAD_REQUEST,
           request_id: data.error_response.request_id,
         };
       return { ok: true, data };
     } catch (error) {
       return {
         ok: false,
-        message: "Internal error.",
+        message: API_RESPONSE_MESSAGE.INTERNAL_ERROR,
       };
     }
   }
