@@ -76,10 +76,10 @@ export class AffiliateClient extends AESystemClient {
     );
     if (response.ok) {
       let data =
-        response.data.aliexpress_affiliate_featuredpromo_get_response.result
-          .promos;
-      if ((data as any).promo) {
-        data = (data as any).promo;
+        response.data.aliexpress_affiliate_featuredpromo_get_response
+          .resp_result.result;
+      if ((data.promos as any).promo) {
+        data.promos = (data.promos as any).promo;
       }
     }
     return response;

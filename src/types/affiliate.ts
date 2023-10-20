@@ -313,7 +313,7 @@ export interface Affiliate_Featuredpromo_Details {
 
 export interface Affiliate_Featuredpromo_Info {
   current_record_count: number;
-  promos: Affiliate_Featuredpromo_Details;
+  promos: Affiliate_Featuredpromo_Details[];
 }
 
 export interface Affiliate_Featuredpromo_Info_Response {
@@ -323,7 +323,9 @@ export interface Affiliate_Featuredpromo_Info_Response {
 }
 
 export interface Affiliate_Featuredpromo_Info_Result {
-  aliexpress_affiliate_featuredpromo_get_response: Affiliate_Featuredpromo_Info_Response;
+  aliexpress_affiliate_featuredpromo_get_response: {
+    resp_result: Affiliate_Featuredpromo_Info_Response;
+  };
 }
 
 /**
