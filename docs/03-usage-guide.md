@@ -36,13 +36,13 @@ The following is an example response for the above API request:
 
 ```json
 {
-  ok: true,
-  data: {
-    aliexpress_ds_product_get_response: {
-      result: {...},
-      rsp_code: 200,
-      rsp_msg: "Call succeeds",
-      request_id: "..."
+  "ok": true,
+  "data": {
+    "aliexpress_ds_product_get_response": {
+      "result": {...},
+      "rsp_code": 200,
+      "rsp_msg": "Call succeeds",
+      "request_id": "..."
     }
   }
 }
