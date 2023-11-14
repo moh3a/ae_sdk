@@ -1,4 +1,4 @@
-# Aliexpress SDK ![npm version](https://img.shields.io/npm/v/ae_sdklabel=)
+# Aliexpress SDK ![npm version](https://img.shields.io/npm/v/ae_sdk?label=)
 
 ## AE Affiliate Client
 
