@@ -1,5 +1,22 @@
 # ae_sdk
 
+## 0.4.16
+
+### Patch Changes
+
+- ## ae_sdk - Patch 0.4.16
+
+  The Aliexpress Open Platform released a new method for dropshippers to calculate freight. Now added in the dropshipper client as `freightInfo`.
+
+  ```ts
+  const result = await client.freightInfo({
+    country_code: "DZ",
+    product_id: 123,
+    product_num: 1,
+    sku_id: "SKU#2:3",
+  });
+  ```
+
 ## 0.4.15
 
 ### Patch Changes

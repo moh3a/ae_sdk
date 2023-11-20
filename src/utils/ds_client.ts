@@ -13,12 +13,22 @@ import type {
   DS_Orders_ByIdx_Params,
   DS_Order_Submit_Params,
   DS_Add_Info_Arguments,
+  DS_Freight_Calculation_Arguments,
 } from "../types";
 import { AESystemClient } from "./system_client";
 
 export class DropshipperClient extends AESystemClient {
   constructor(init: AE_Base_Client) {
     super(init);
+  }
+
+  /**
+   * @link https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.logistics.buyer.freight.get&methodType=GET/POST
+   */
+  async freightInfo(args: DS_Freight_Calculation_Arguments) {
+    return await this.execute("aliexpress.logistics.buyer.freight.get", {
+      aeopFreightCalculateForBuyerDTO: JSON.stringify(args),
+    });
   }
 
   /**

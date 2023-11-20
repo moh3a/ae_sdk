@@ -606,6 +606,51 @@ export interface DS_Tracking_Info_Result {
 
 /**
  * DROPSHIPPER API
+ * FREIGHT CALCULATION
+ */
+
+export interface DS_Freight_Calculation_Arguments {
+  product_id: number;
+  product_num: number;
+  sku_id: string;
+  country_code: string;
+  province_code?: string;
+  city_code?: string;
+  send_goods_country_code?: string;
+  price?: string;
+  price_currency?: AE_Currency;
+}
+
+export interface DS_Freight_Calculation_Params {
+  aeopFreightCalculateForBuyerDTO: string;
+}
+
+export interface DS_Freight_Calculation_Info {
+  cent: string;
+  currency: Record<string, string>;
+  currency_code: AE_Currency;
+}
+
+export interface DS_Freight_Calculation {
+  shipping_method: string;
+  service_name: string;
+  estimated_delivery_time: string;
+  freight: DS_Freight_Calculation_Info;
+  tracking_available: "true" | "false";
+}
+
+export interface DS_Freight_Calculation_Response {
+  result: {
+    aeop_freight_calculate_result_for_buyer_dtolist: DS_Freight_Calculation[];
+  };
+}
+
+export interface DS_Freight_Calculation_Result {
+  aliexpress_logistics_buyer_freight_get_response: DS_Freight_Calculation_Response;
+}
+
+/**
+ * DROPSHIPPER API
  * CATEGORIES
  */
 export interface DS_Categories_Result {

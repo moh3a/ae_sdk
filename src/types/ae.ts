@@ -54,6 +54,8 @@ import type {
   DS_Tracking_Info_Params,
   DS_Tracking_Info_Result,
   DS_Categories_Result,
+  DS_Freight_Calculation_Params,
+  DS_Freight_Calculation_Result,
 } from ".";
 
 export type AE_API_NAMES =
@@ -62,6 +64,7 @@ export type AE_API_NAMES =
   | SYSTEM_API_NAMES;
 
 export type DS_API_NAMES =
+  | "aliexpress.logistics.buyer.freight.get"
   | "aliexpress.logistics.buyer.freight.calculate"
   | "aliexpress.logistics.ds.trackinginfo.query"
   | "aliexpress.ds.add.info"
@@ -158,6 +161,12 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
         method: "/auth/token/refresh";
         params: AES_Refresh_Token_Params;
         result: AES_Refresh_Token_Result;
+      }
+    : T extends "aliexpress.logistics.buyer.freight.get"
+    ? {
+        method: T;
+        params: DS_Freight_Calculation_Params;
+        result: DS_Freight_Calculation_Result;
       }
     : T extends "aliexpress.logistics.buyer.freight.calculate"
     ? {
