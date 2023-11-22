@@ -1,5 +1,20 @@
 # ae_sdk
 
+## 0.4.17
+
+### Patch Changes
+
+- Normalize AE API's (`aliexpress.logistics.buyer.freight.get` endpoint) response for a product's freight info.
+
+  ```ts
+  await client.freightInfo({
+    country_code: "DZ",
+    send_goods_country_code: "CN",
+    product_id: 123456,
+    product_num: 1,
+  });
+  ```
+
 ## 0.4.16
 
 ### Patch Changes

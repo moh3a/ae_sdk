@@ -43,11 +43,11 @@ await client.getHotProducts({
 Get the shipping details for any product.
 
 ```ts
-await client.shippingInfo({
-  country_code: "CN",
+await client.freightInfo({
+  country_code: "DZ",
+  send_goods_country_code: "CN",
   product_id: 123456,
   product_num: 1,
-  send_goods_country_code: "DZ",
 });
 ```
 

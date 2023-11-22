@@ -639,14 +639,18 @@ export interface DS_Freight_Calculation {
   tracking_available: "true" | "false";
 }
 
-export interface DS_Freight_Calculation_Response {
-  result: {
-    aeop_freight_calculate_result_for_buyer_dtolist: DS_Freight_Calculation[];
-  };
-}
+export type DS_Freight_Calculation_Response =
+  | {
+      aeop_freight_calculate_result_for_buyer_dtolist: DS_Freight_Calculation[];
+      success: true;
+    }
+  | { success: false; error_desc: string };
 
 export interface DS_Freight_Calculation_Result {
-  aliexpress_logistics_buyer_freight_get_response: DS_Freight_Calculation_Response;
+  aliexpress_logistics_buyer_freight_get_response: {
+    result: DS_Freight_Calculation_Response;
+    request_id: string;
+  };
 }
 
 /**

@@ -23,12 +23,32 @@ export class DropshipperClient extends AESystemClient {
   }
 
   /**
+   * AE API endpoint: `aliexpress.logistics.buyer.freight.get`
    * @link https://openservice.aliexpress.com/doc/api.htm#/api?cid=21038&path=aliexpress.logistics.buyer.freight.get&methodType=GET/POST
    */
   async freightInfo(args: DS_Freight_Calculation_Arguments) {
-    return await this.execute("aliexpress.logistics.buyer.freight.get", {
-      aeopFreightCalculateForBuyerDTO: JSON.stringify(args),
-    });
+    let response = await this.execute(
+      "aliexpress.logistics.buyer.freight.get",
+      {
+        aeopFreightCalculateForBuyerDTO: JSON.stringify(args),
+      },
+    );
+
+    if (response.ok) {
+      const data =
+        response.data.aliexpress_logistics_buyer_freight_get_response;
+      if (
+        data.result.success &&
+        (data.result.aeop_freight_calculate_result_for_buyer_dtolist as any)
+          .aeop_freight_calculate_result_for_buyer_d_t_o
+      ) {
+        data.result.aeop_freight_calculate_result_for_buyer_dtolist = (
+          data.result.aeop_freight_calculate_result_for_buyer_dtolist as any
+        ).aeop_freight_calculate_result_for_buyer_d_t_o;
+      }
+    }
+
+    return response;
   }
 
   /**
