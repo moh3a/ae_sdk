@@ -65,7 +65,7 @@ export class AEBaseClient implements AE_Base_Client {
 
       for (let i = 0; i < sorted.length; i++) {
         let symbol = i === 0 ? "?" : "&";
-        if (p[sorted[i] as keyof typeof p])
+        if (p[sorted[i] as keyof typeof p] !== undefined && p[sorted[i] as keyof typeof p] !== null)
           basestring +=
             symbol +
             sorted[i] +
