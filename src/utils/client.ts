@@ -124,23 +124,10 @@ export class AEBaseClient implements AE_Base_Client {
     return { ok: true, data };
   }
 
-  protected validateParams(params: Record<string, any>): void {
-    if (!params || typeof params !== 'object') {
-      throw new Error('Parameters must be an object');
-    }
-    for (const [key, value] of Object.entries(params)) {
-      if (value === undefined || value === null) {
-        throw new Error(`Parameter "${key}" cannot be null or undefined`);
-      }
-    }
-  }
-
   protected async execute<K extends AE_API_NAMES>(
     method: K,
     params: AliexpressMethod<K>["params"],
   ): Result<AliexpressMethod<K>["result"]> {
-    this.validateParams(params);
-
     const parameters: AliexpressMethod<K>["params"] & PublicParams = {
       ...params,
       method,
