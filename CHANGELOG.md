@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.5.1
+
+### Patch Changes
+
+- Rename $try to tryFn
+
 ## 0.5.0
 
 ### Minor Changes

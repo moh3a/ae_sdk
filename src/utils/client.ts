@@ -14,7 +14,7 @@ import {
   SIGN_METHOD,
   SIGN_METHOD_ENCODING,
 } from "../constants";
-import { $try } from ".";
+import { tryFn } from ".";
 
 export class AEBaseClient implements AE_Base_Client {
   readonly app_key: string;
@@ -76,7 +76,7 @@ export class AEBaseClient implements AE_Base_Client {
   }
 
   protected async call<T extends PublicParams, K>(params: T): Result<K> {
-    const [fetchError, response] = await $try(fetch(this.assemble(params), { method: "POST" }));
+    const [fetchError, response] = await tryFn(fetch(this.assemble(params), { method: "POST" }));
     if (fetchError) {
       if (fetchError instanceof TypeError) {
         return {
@@ -97,7 +97,7 @@ export class AEBaseClient implements AE_Base_Client {
       message: `HTTP Error: ${response?.status} ${response?.statusText}`,
     };
 
-    const [jsonError, data] = await $try(response?.json());
+    const [jsonError, data] = await tryFn(response?.json());
     if (jsonError) {
       if (jsonError instanceof SyntaxError) {
         return {

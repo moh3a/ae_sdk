@@ -35,7 +35,7 @@ export function convert_data_uri_to_binary(data_uri: string) {
   return array;
 };
 
-export async function $try<T>(
+export async function tryFn<T>(
   promise: Promise<T>,
 ): Promise<[Error | undefined, T | undefined]> {
   try {
