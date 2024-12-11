@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.5.2
+
+### Patch Changes
+
+- General bug fixes
+
 ## 0.5.1
 
 ### Patch Changes

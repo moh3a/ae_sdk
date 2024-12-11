@@ -33,17 +33,17 @@ export class AEBaseClient implements AE_Base_Client {
   }
 
   protected sign(params: any): string {
-    const p = JSON.parse(JSON.stringify(params));
+    const p = { ...params };
     let basestring = "";
-    if (p.method.includes("/")) {
+    if (typeof p.method === 'string' && p.method.includes("/")) {
       basestring = p.method;
       delete p.method;
     }
 
-    basestring += Object.keys(p)
-      .sort()
-      .map((key) => key + p[key as keyof typeof p])
-      .join("");
+    basestring += Object.entries(p)
+      .filter(([_, value]) => value != null)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .reduce((acc, [key, value]) => acc + key + String(value), "");
 
     return createHmac(SIGN_METHOD, this.app_secret, {
       encoding: SIGN_METHOD_ENCODING,
@@ -54,25 +54,27 @@ export class AEBaseClient implements AE_Base_Client {
   }
 
   protected assemble<T extends PublicParams>(params: T): string {
-    const p = JSON.parse(JSON.stringify(params));
-    let url = "";
+    const p = { ...params };
+
+    const baseUrl = p.method.includes("/")
+      ? `${this.new_apis_url}${p.method}`
+      : this.migrated_apis_url;
+
     if (p.method.includes("/")) {
-      url = this.new_apis_url + p.method;
+      // @ts-ignore
       delete p.method;
-    } else url = this.migrated_apis_url;
-    let sorted = Object.keys(p).sort();
-    for (let i = 0; i < sorted.length; i++) {
-      let symbol = i === 0 ? "?" : "&";
-      if (p[sorted[i] as keyof typeof p] !== undefined && p[sorted[i] as keyof typeof p] !== null)
-        url +=
-          symbol +
-          sorted[i] +
-          "=" +
-          encodeURIComponent(
-            p[sorted[i] as keyof typeof p] as number | string | boolean,
-          );
     }
-    return url;
+
+    const queryParams = Object.entries(p)
+      .filter(([_, value]) => value != null)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, value], index) => {
+        const prefix = index === 0 ? "?" : "&";
+        return `${prefix}${key}=${encodeURIComponent(String(value))}`;
+      })
+      .join("");
+
+    return baseUrl + queryParams;
   }
 
   protected async call<T extends PublicParams, K>(params: T): Result<K> {
@@ -149,9 +151,14 @@ export class AEBaseClient implements AE_Base_Client {
     method: string,
     params: Record<string, string | number | boolean>,
   ): Result<any> {
+    if (!method) return {
+      ok: false,
+      message: 'Method parameter is required'
+    };
+
     const parameters: any = {
       ...params,
-      method: method as any,
+      method,
       session: this.session,
       app_key: this.app_key,
       simplify: true,
