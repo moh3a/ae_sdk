@@ -10,11 +10,11 @@ import type {
 import {
   AE_OP_API_URL,
   AE_TOP_API_URL,
-  API_RESPONSE_MESSAGE,
   RESPONSE_FORMAT,
   SIGN_METHOD,
   SIGN_METHOD_ENCODING,
 } from "../constants";
+import { $try } from ".";
 
 export class AEBaseClient implements AE_Base_Client {
   readonly app_key: string;
@@ -53,41 +53,85 @@ export class AEBaseClient implements AE_Base_Client {
       .toUpperCase();
   }
 
-  protected async call<T extends PublicParams, K>(params: T): Result<K> {
-    try {
-      const p = JSON.parse(JSON.stringify(params));
-      let basestring = "";
-      if (p.method.includes("/")) {
-        basestring = this.new_apis_url + p.method;
-        delete p.method;
-      } else basestring = this.migrated_apis_url;
-      let sorted = Object.keys(p).sort();
+  protected assemble<T extends PublicParams>(params: T): string {
+    const p = JSON.parse(JSON.stringify(params));
+    let url = "";
+    if (p.method.includes("/")) {
+      url = this.new_apis_url + p.method;
+      delete p.method;
+    } else url = this.migrated_apis_url;
+    let sorted = Object.keys(p).sort();
+    for (let i = 0; i < sorted.length; i++) {
+      let symbol = i === 0 ? "?" : "&";
+      if (p[sorted[i] as keyof typeof p] !== undefined && p[sorted[i] as keyof typeof p] !== null)
+        url +=
+          symbol +
+          sorted[i] +
+          "=" +
+          encodeURIComponent(
+            p[sorted[i] as keyof typeof p] as number | string | boolean,
+          );
+    }
+    return url;
+  }
 
-      for (let i = 0; i < sorted.length; i++) {
-        let symbol = i === 0 ? "?" : "&";
-        if (p[sorted[i] as keyof typeof p] !== undefined && p[sorted[i] as keyof typeof p] !== null)
-          basestring +=
-            symbol +
-            sorted[i] +
-            "=" +
-            encodeURIComponent(
-              p[sorted[i] as keyof typeof p] as number | string | boolean,
-            );
-      }
-      const res = await fetch(basestring, { method: "POST" });
-      const data = await res.json();
-      if (data.error_response || !res.ok)
+  protected async call<T extends PublicParams, K>(params: T): Result<K> {
+    const [fetchError, response] = await $try(fetch(this.assemble(params), { method: "POST" }));
+    if (fetchError) {
+      if (fetchError instanceof TypeError) {
         return {
           ok: false,
-          message: API_RESPONSE_MESSAGE.BAD_REQUEST,
-          request_id: data.error_response.request_id,
+          message: `Network Error: ${fetchError.message}`,
+          error: fetchError
         };
-      return { ok: true, data };
-    } catch (error) {
+      }
       return {
         ok: false,
-        message: API_RESPONSE_MESSAGE.INTERNAL_ERROR,
+        message: `Fetch Error: ${fetchError.message}`,
+        error: fetchError
       };
+    }
+
+    if (!response?.ok) return {
+      ok: false,
+      message: `HTTP Error: ${response?.status} ${response?.statusText}`,
+    };
+
+    const [jsonError, data] = await $try(response?.json());
+    if (jsonError) {
+      if (jsonError instanceof SyntaxError) {
+        return {
+          ok: false,
+          message: `Invalid JSON Response: ${jsonError.message}`,
+          error: jsonError
+        };
+      }
+      return {
+        ok: false,
+        message: `JSON Parsing Error: ${jsonError.message}`,
+        error: jsonError
+      };
+    }
+
+    if (data?.error_response)
+      return {
+        ok: false,
+        message: "Bad request",
+        error_response: data.error_response,
+        request_id: data.error_response.request_id,
+      };
+
+    return { ok: true, data };
+  }
+
+  protected validateParams(params: Record<string, any>): void {
+    if (!params || typeof params !== 'object') {
+      throw new Error('Parameters must be an object');
+    }
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null) {
+        throw new Error(`Parameter "${key}" cannot be null or undefined`);
+      }
     }
   }
 
@@ -95,6 +139,8 @@ export class AEBaseClient implements AE_Base_Client {
     method: K,
     params: AliexpressMethod<K>["params"],
   ): Result<AliexpressMethod<K>["result"]> {
+    this.validateParams(params);
+
     const parameters: AliexpressMethod<K>["params"] & PublicParams = {
       ...params,
       method,

@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.5.0
+
+### Minor Changes
+
+- Add the entire AE error response to the returned object if available
+
 ## 0.4.17
 
 ### Patch Changes

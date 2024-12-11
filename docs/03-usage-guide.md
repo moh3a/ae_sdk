@@ -39,7 +39,7 @@ The following is an example response for the above API request:
   "ok": true,
   "data": {
     "aliexpress_ds_product_get_response": {
-      "result": {...},
+      "result": {},
       "rsp_code": 200,
       "rsp_msg": "Call succeeds",
       "request_id": "..."
@@ -48,27 +48,17 @@ The following is an example response for the above API request:
 }
 ```
 
-If not successfull, you will either get:
+If not successfull, you will get:
 
 ```json
 {
   "ok": false,
-  "message": "Bad request.",
-  "request_id": "..."
+  "message": "...",
+  "request_id": "...",
+  "error_response": {}, /** Entire AE API error response, if available */
+  "error": {} /** JS Error object, if available */
 }
 ```
-
-In this case, you should make sure you correctly passed the right parameters. If the problem persists, please contact me with `request_id`.
-Or you will get the following error:
-
-```json
-{
-  "ok": false,
-  "message": "Internal error."
-}
-```
-
-Hopefully, it won't happen 🙃
 
 ### Directly call the API
 
