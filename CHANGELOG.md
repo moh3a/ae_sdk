@@ -1,5 +1,11 @@
 # ae_sdk
 
+## 0.5.3
+
+### Patch Changes
+
+- Made callAPIDirectly method generic
+
 ## 0.5.2
 
 ### Patch Changes

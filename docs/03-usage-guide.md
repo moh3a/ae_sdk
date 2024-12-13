@@ -50,12 +50,12 @@ The following is an example response for the above API request:
 
 If not successfull, you will get:
 
-```json
+```jsonc
 {
   "ok": false,
   "message": "...",
   "request_id": "...",
-  "error_response": {}, /** Entire AE API error response, if available */
+  "error_response": {} /** Entire AE API error response, if available */,
   "error": {} /** JS Error object, if available */
 }
 ```

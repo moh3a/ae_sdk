@@ -59,7 +59,6 @@ Follow the steps detailed in [this link](https://openservice.aliexpress.com/doc/
 
 ## Usage
 
-
 > Using the dropshipping client in this example
 
 ### Initialize a client
@@ -110,19 +109,19 @@ The following is an example response for the above API request:
 
 If not successfull, you will get:
 
-```json
+```jsonc
 {
   "ok": false,
   "message": "...",
   "request_id": "...",
-  "error_response": {}, /** Entire AE API error response, if available */
+  "error_response": {} /** Entire AE API error response, if available */,
   "error": {} /** JS Error object, if available */
 }
 ```
 
 #### Directly call the API
 
-If you wish to call a different Aliexpress API that is not by the current version. You can do the following:
+If you wish to call a different Aliexpress API that is not available in the current version. You can do the following:
 
 ```ts
 const result = await client.callAPIDirectly("aliexpress.api.endpoint", {
@@ -131,7 +130,6 @@ const result = await client.callAPIDirectly("aliexpress.api.endpoint", {
 ```
 
 ## Examples
-
 
 ### AE Affiliate Client
 

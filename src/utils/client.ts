@@ -35,7 +35,7 @@ export class AEBaseClient implements AE_Base_Client {
   protected sign(params: any): string {
     const p = { ...params };
     let basestring = "";
-    if (typeof p.method === 'string' && p.method.includes("/")) {
+    if (typeof p.method === "string" && p.method.includes("/")) {
       basestring = p.method;
       delete p.method;
     }
@@ -78,26 +78,29 @@ export class AEBaseClient implements AE_Base_Client {
   }
 
   protected async call<T extends PublicParams, K>(params: T): Result<K> {
-    const [fetchError, response] = await tryFn(fetch(this.assemble(params), { method: "POST" }));
+    const [fetchError, response] = await tryFn(
+      fetch(this.assemble(params), { method: "POST" }),
+    );
     if (fetchError) {
       if (fetchError instanceof TypeError) {
         return {
           ok: false,
           message: `Network Error: ${fetchError.message}`,
-          error: fetchError
+          error: fetchError,
         };
       }
       return {
         ok: false,
         message: `Fetch Error: ${fetchError.message}`,
-        error: fetchError
+        error: fetchError,
       };
     }
 
-    if (!response?.ok) return {
-      ok: false,
-      message: `HTTP Error: ${response?.status} ${response?.statusText}`,
-    };
+    if (!response?.ok)
+      return {
+        ok: false,
+        message: `HTTP Error: ${response?.status} ${response?.statusText}`,
+      };
 
     const [jsonError, data] = await tryFn(response?.json());
     if (jsonError) {
@@ -105,13 +108,13 @@ export class AEBaseClient implements AE_Base_Client {
         return {
           ok: false,
           message: `Invalid JSON Response: ${jsonError.message}`,
-          error: jsonError
+          error: jsonError,
         };
       }
       return {
         ok: false,
         message: `JSON Parsing Error: ${jsonError.message}`,
-        error: jsonError
+        error: jsonError,
       };
     }
 
@@ -147,16 +150,24 @@ export class AEBaseClient implements AE_Base_Client {
     >(parameters);
   }
 
-  async callAPIDirectly(
-    method: string,
-    params: Record<string, string | number | boolean>,
-  ): Result<any> {
-    if (!method) return {
-      ok: false,
-      message: 'Method parameter is required'
-    };
+  async callAPIDirectly<
+    TData extends Record<string, string | number | boolean>,
+    TResponse,
+  >(method: string, params: TData): Result<TResponse> {
+    if (!method?.trim())
+      return {
+        ok: false,
+        message: "Method parameter is required",
+      };
 
-    const parameters: any = {
+    if (!params || typeof params !== "object") {
+      return {
+        ok: false,
+        message: "Params must be a valid object",
+      };
+    }
+
+    const parameters = {
       ...params,
       method,
       session: this.session,
@@ -164,9 +175,9 @@ export class AEBaseClient implements AE_Base_Client {
       simplify: true,
       sign_method: this.sign_method,
       timestamp: Date.now(),
-    };
+    } as TData & PublicParams;
     parameters.sign = this.sign(parameters);
 
-    return await this.call<any, unknown>(parameters);
+    return await this.call<TData & PublicParams, TResponse>(parameters);
   }
 }
