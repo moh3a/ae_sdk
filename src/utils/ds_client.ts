@@ -186,7 +186,7 @@ export class DropshipperClient extends AESystemClient {
 
       let data = response.data.aliexpress_trade_ds_order_get_response.result;
 
-      if (
+      if ( "child_order_list" in data &&
         data.child_order_list &&
         (data.child_order_list as any).ae_child_order_info
       ) {
@@ -195,7 +195,7 @@ export class DropshipperClient extends AESystemClient {
         ).ae_child_order_info;
       }
 
-      if (
+      if ( "logistics_info_list" in data &&
         data.logistics_info_list &&
         (data.logistics_info_list as any).ae_order_logistics_info
       ) {
