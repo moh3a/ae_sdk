@@ -241,17 +241,24 @@ export class AEBaseClient implements AE_Base_Client {
    * @param params - Custom parameters for the API call
    * @returns A Result object with the response data or error information
    */
-  async callAPIDirectly(
-    method: string,
-    params: Record<string, string | number | boolean>,
-  ): Result<any> {
-    if (!method)
+  async callAPIDirectly<
+    TData extends Record<string, string | number | boolean>,
+    TResponse,
+  >(method: string, params: TData): Result<TResponse> {
+    if (!method?.trim())
       return {
         ok: false,
         message: "Method parameter is required",
       };
 
-    const parameters: any = {
+    if (!params || typeof params !== "object") {
+      return {
+        ok: false,
+        message: "Params must be a valid object",
+      };
+    }
+
+    const parameters = {
       ...params,
       method,
       session: this.session,
@@ -259,9 +266,9 @@ export class AEBaseClient implements AE_Base_Client {
       simplify: true,
       sign_method: this.sign_method,
       timestamp: Date.now(),
-    };
+    } as TData & PublicParams;
     parameters.sign = this.sign(parameters);
 
-    return await this.call<any, unknown>(parameters);
+    return await this.call<TData & PublicParams, TResponse>(parameters);
   }
 }

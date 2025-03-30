@@ -1,5 +1,6 @@
 # ae_sdk
 
+<<<<<<< HEAD
 ## 0.6.0
 
 ### Minor Changes
@@ -19,6 +20,13 @@
   ### Fixed
 
   - Improved README
+=======
+## 0.5.3
+
+### Patch Changes
+
+- Made callAPIDirectly method generic
+>>>>>>> 2d2cd0c080d410223b8055664b5abf1e5708a07b
 
 ## 0.5.2
 
