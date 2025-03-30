@@ -1,5 +1,25 @@
 # ae_sdk
 
+## 0.6.0
+
+### Minor Changes
+
+- Added support for promotional payments in order creation while deprecating several legacy API methods.
+
+  ## [Version 0.6.0]
+
+  ### Added
+
+  - Added `promo_and_payment` parameter to `createOrder` method
+
+  ### Deprecated
+
+  - Marked `freightInfo`, `trackingInfo`, and other legacy methods as deprecated
+
+  ### Fixed
+
+  - Improved README
+
 ## 0.5.2
 
 ### Patch Changes

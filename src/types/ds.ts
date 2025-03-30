@@ -219,6 +219,7 @@ export interface DS_Product_Result {
  *
  */
 export interface DS_Place_Order_Params {
+  ds_extend_request?: string;
   /**
    * logistics_address
    * @description Logistics address information
@@ -263,6 +264,20 @@ export interface AE_Product_Item {
   product_count: number;
   product_id: number;
   sku_attr?: string;
+}
+
+export interface AE_Place_Order_Payment_Params {
+  promotion?: {
+    promotion_code?: string;
+    promotion_channel_info: string;
+  };
+  payment?: {
+    pay_currency?: AE_Currency;
+    try_to_pay?: "true" | "false";
+  };
+  trade_extra_param?: {
+    business_model?: "retail" | "wholesale";
+  };
 }
 
 export interface AE_Logistics_Address {

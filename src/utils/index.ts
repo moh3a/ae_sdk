@@ -1,39 +1,52 @@
 import type { Affiliate_Base_Products_Cursor } from "../types";
 
-export function parse_affiliate_products(
-  input: Affiliate_Base_Products_Cursor,
-) {
+export function parseAffiliateProducts(input: Affiliate_Base_Products_Cursor) {
   if (!input?.products) return input;
 
-  if ('product' in input.products) {
-    input.products = (input.products as any).product;
-  }
+  input.products = extractNestedArray(input.products, "product");
 
-  const hasStringImageUrls = input.products?.[0]?.product_small_image_urls &&
-    'string' in (input.products[0].product_small_image_urls as any);
+  if (input.products?.length > 0) {
+    const firstProduct = input.products[0];
 
-  if (hasStringImageUrls) {
-    input.products = input.products!.map((product) => ({
-      ...product,
-      product_small_image_urls: (product.product_small_image_urls as any).string
-    }));
+    const hasStringImageUrls =
+      firstProduct?.product_small_image_urls &&
+      extractNestedProperty(firstProduct.product_small_image_urls, "string") !==
+        null;
+
+    if (hasStringImageUrls) {
+      input.products = input.products.map((product) => ({
+        ...product,
+        product_small_image_urls: extractNestedArray(
+          product.product_small_image_urls,
+          "string",
+        ),
+      }));
+    }
   }
 
   return input;
-};
+}
 
-export function convert_data_uri_to_binary(data_uri: string) {
-  const base64 = data_uri.substring(
-    data_uri.indexOf(";base64,") + ";base64,".length,
-  );
-  const raw = atob(base64);
-  const array = new Uint8Array(new ArrayBuffer(raw.length));
+export function extractNestedProperty<T>(
+  obj: any,
+  nestedKey: string,
+): T | null {
+  if (!obj) return null;
+  return nestedKey in obj ? obj[nestedKey] : null;
+}
 
-  for (let i = 0; i < raw.length; i++) {
-    array[i] = raw.charCodeAt(i);
+export function extractNestedArray<T>(obj: any, nestedKey: string): T[] {
+  if (!obj) return [];
+
+  if (nestedKey in obj && obj[nestedKey]) {
+    if (Array.isArray(obj[nestedKey])) {
+      return obj[nestedKey];
+    }
+    return [obj[nestedKey]].filter(Boolean);
   }
-  return array;
-};
+
+  return [];
+}
 
 export async function tryFn<T>(
   promise: Promise<T>,
@@ -52,7 +65,7 @@ export function assertIsError(value: unknown): Error {
   let stringified = "[Unable to stringify the thrown value]";
   try {
     stringified = JSON.stringify(value);
-  } catch { }
+  } catch {}
 
   const error = new Error(
     `This value was thrown as is, not through an Error: ${stringified}`,

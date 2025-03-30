@@ -70,8 +70,8 @@ export type DS_API_NAMES =
   | "aliexpress.ds.add.info"
   | "aliexpress.ds.image.search"
   | "aliexpress.ds.recommend.feed.get"
-  | "aliexpress.trade.buy.placeorder"
-  | "aliexpress.ds.trade.order.get"
+  | "aliexpress.ds.order.create"
+  | "aliexpress.trade.ds.order.get"
   | "aliexpress.ds.feedname.get"
   | "aliexpress.ds.category.get"
   | "aliexpress.ds.commissionorder.listbyindex"
@@ -194,13 +194,13 @@ export type AliexpressMethod<T extends AE_API_NAMES> =
         params: DS_Recommended_Products_Params;
         result: DS_Recommended_Products_Result;
       }
-    : T extends "aliexpress.trade.buy.placeorder"
+    : T extends "aliexpress.ds.order.create"
     ? {
         method: T;
         params: DS_Place_Order_Params;
         result: DS_Place_Order_Result;
       }
-    : T extends "aliexpress.ds.trade.order.get"
+    : T extends "aliexpress.trade.ds.order.get"
     ? {
         method: T;
         params: DS_Get_Order_Params;
